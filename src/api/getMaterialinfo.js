@@ -14,3 +14,10 @@ export function selectByName(data){
 		data
 	})
 }
+export function edit(data){
+	return request({
+		url: '/matetialinfo/edit',//请求接口
+		method: 'post',//请求方式
+		data
+	})
+}

@@ -152,14 +152,12 @@
 			label-width="150px"
 			label-position="right"
 		  >
-			<el-form-item label="物资编号">
-			  <el-input v-model="temp.materialId"  placeholder="请输入物资编号"  />
-			</el-form-item>
+			
 			<el-form-item label="物资类型">
 			  <el-input v-model="temp.materialtypeId" placeholder="请输入物资类型" />
 			</el-form-item>
 			<el-form-item label="名称">
-			  <el-input v-model="temp.materialName" placeholder="请输入名称" value="要设置的默认值"/>
+			  <el-input v-model="temp.materialName" placeholder="请输入名称" />
 			</el-form-item>
 			<el-form-item label="价格(单位:元)">
 			  <el-input v-model="temp.materialPrice" placeholder="请输入价格(单位:元)" />
@@ -183,8 +181,9 @@
 
 <script>
 	// import { queryByCondition } from '@/api/getCarinfo.js';
-	import { selectAll,selectByName} from '@/api/getMaterialinfo.js';
+	import { selectAll,selectByName,edit} from '@/api/getMaterialinfo.js';
 	import { setStorage, getStorage} from "@/utils/localStorage.js";
+	import {deepClone} from "@/utils/index.js";
 	const _temp = {
 	  // id: '',
 	  materialId: '',
@@ -302,13 +301,29 @@
 			  }
 			  this.listLoading = true
 			  setTimeout(() => {
-				this.$message({
-				  message: '提交成功',
-				  type: 'success'
-				})
+				  let data=this.temp;
+				edit(data).then((res)=>{
+					console.log(res);
+					if(res.code==200){
+						this.$message({
+						  message: '提交成功',
+						  type: 'success'
+						})
+					}
+					else{
+						this.$message({
+						  message: '提交失败',
+						  type: 'success'
+						})
+					}
+				});
 				this.dialogVisible = false
-				this.loading = false
-			  }, 300)
+				// this.loading = false
+				this.listLoading = false
+				
+			  })
+			  this.initMateriallist()
+			  console.log("shengxiao ")
 			}
 			// //获取类型数据
 			// initCategoryList(){
