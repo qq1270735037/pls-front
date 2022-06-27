@@ -51,7 +51,7 @@
 			<el-table-column
 				fixed
 				label="序号"
-				width="100"
+				width="350"
 				align="center"
 			>
 				<template slot-scope="scope">
@@ -61,7 +61,7 @@
 			  <el-table-column
 				fixed
 				label="省份"
-				width="200"
+				width="350"
 				align="center"
 			  >
 				<template slot-scope="scope">
@@ -70,7 +70,7 @@
 			  </el-table-column>
 			  <el-table-column
 				label="城市"
-				width="180"
+				width="350"
 				align="center"
 			  >
 				<template slot-scope="scope">
@@ -80,7 +80,7 @@
 			  </el-table-column>
 			  <el-table-column
 				label="地区"
-				width="170"
+				width="350"
 				align="center"
 			  >
 				<template slot-scope="scope">
@@ -91,9 +91,9 @@
 			  
 			  
 			  <el-table-column
-				fixed
+				fixed="right"
 				label="操作"
-				width="180"
+				width="250"
 				align="center"
 			  >
 				<template slot-scope="scope">
@@ -104,7 +104,7 @@
 					  size="mini"
 					  @click="edit(scope)"
 					>
-					  修改
+					修改
 					</el-button>
 					<el-button
 					  type="danger"
@@ -112,7 +112,7 @@
 					  size="mini"
 					  @click="del(scope)"
 					>
-					  删除
+					删除
 					</el-button>
 				  </el-button-group>
 				</template>
@@ -175,17 +175,14 @@
 			initAddressList(){
 				this.listLoading = true;
 				queryByCondition({}).then((res)=>{
-					 console.log(res);
-					 console.log(res.data);
-					// consol.log(JSON.parse(res.data));
+					
 					if(res != -1){
-						console.log("这是res\n");
-						console.log(res);
-						res.data.forEach((item, index) => {
+
+						res.datas.forEach((item, index) => {
 							item.index = index+1;
 
 						})
-						this.addressList = res.data;
+						this.addressList = res.datas;
 						this.listLoading = false;
 					}
 	

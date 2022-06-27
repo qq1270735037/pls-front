@@ -190,14 +190,6 @@
 	export default {
 		data() {
 			return {
-				// carList: [{
-				// 	index:1,
-				//   carNumber: '2016-05-03',
-				//   carStyle: '王小虎',
-				//   carLoad: '上海市普陀区金沙江路 1518 弄',
-				//   carMileage: 150,
-				//   carBrand:"大众"
-				// },],//用于存放doc数据
 				selectData: "",//被选择的下拉
 				queryData: "",//用于条件查询
 				categoryList: [],//用于接收类型数据
@@ -220,12 +212,7 @@
 			initCarList(){
 				this.listLoading = true;
 				queryByCondition({}).then((res)=>{
-					 // console.log(res);
-					 // console.log(res.datas);
-					// consol.log(JSON.parse(res.data));
 					if(res != -1){
-						// console.log("这是res\n");
-						// console.log(res);
 						res.datas.forEach((item, index) => {
 							item.index = index+1;
               this.carList = res.datas;
