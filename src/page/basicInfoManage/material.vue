@@ -322,7 +322,10 @@
 				this.listLoading = false
 				
 			  })
-			  this.initMateriallist()
+			  
+			  setTimeout(() =>{
+			      this.initMateriallist()
+			  },300);
 			  console.log("shengxiao ")
 			}
 			// //获取类型数据
