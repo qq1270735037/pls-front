@@ -5,6 +5,7 @@ import login from "@/page/login/login";
 import mainPage from "@/page/mainPage/mainPage";
 import managerPage from "@/page/managerPage/managerPage";
 import docManager from "@/page/managerPage/docManager";
+
 import basic from "@/page/basicInfoManage/basic"
 import address from "@/page/basicInfoManage/address";
 import build from "@/page/basicInfoManage/build";
@@ -15,6 +16,12 @@ import equipment from "@/page/basicInfoManage/equipment";
 import goods from "@/page/basicInfoManage/goods";
 import identity from "@/page/basicInfoManage/identity";
 import material from "@/page/basicInfoManage/material";
+
+import buildManage from "@/page/buyAndSaleManage/buildManage";
+import materialManage from "@/page/buyAndSaleManage/materialManage";
+import carManage from "@/page/buyAndSaleManage/carManage";
+import goodsManage from "@/page/buyAndSaleManage/goodsManage";
+import officeSupplies from "@/page/buyAndSaleManage/officeSupplies";
 
 
 import test from "@/page/test"
@@ -129,6 +136,57 @@ export default new Router({
 							  },
 						  }
 					  ]
+				},
+				{
+					path:'/buyAndSaleManage',
+					name:'buyAndSaleManage',
+					component:basic,
+					//redirect: "/officeSupplies",
+					meta: {
+						title:'购销管理'
+					},
+					children: [
+						{
+							path:'/buildManage',
+							name:'buildManage',
+							component:buildManage,
+							meta: {
+								title:'建筑租售'
+							}
+						},
+						{
+							path:'/materialManage',
+							name:'materialManage',
+							component:materialManage,
+							meta: {
+								title:'物资购销'
+							}
+						},
+						{	
+							path:'/carManage',
+							name:'carManage',
+							component:carManage,
+							meta: {
+								title:'汽车购销'
+							}
+						},
+						{
+							path:'/goodsManage',
+							name:'goodsManage',
+							component:goodsManage,
+							meta: {
+								title:'货物购销'
+							}
+						},
+						{
+							path:'/officeSupplies',
+							name:'officeSupplies',
+							component:officeSupplies,
+							meta: {
+								title:'办公耗材购买'
+							}
+						}		
+					]
 				}
 
 			  ]
