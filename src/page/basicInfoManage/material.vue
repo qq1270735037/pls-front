@@ -152,20 +152,23 @@
 			label-width="150px"
 			label-position="right"
 		  >
-			<el-form-item label="车牌号">
-			  <el-input v-model="temp.carNumber" placeholder="请输入车牌号" />
+			<el-form-item label="物资编号">
+			  <el-input v-model="temp.materialId"  placeholder="请输入物资编号"  />
 			</el-form-item>
-			<el-form-item label="车型">
-			  <el-input v-model="temp.carStyle" placeholder="请输入车型" />
+			<el-form-item label="物资类型">
+			  <el-input v-model="temp.materialtypeId" placeholder="请输入物资类型" />
 			</el-form-item>
-			<el-form-item label="车辆载重(单位:吨)">
-			  <el-input v-model="temp.carLoad" placeholder="请输入车辆载重(单位:吨)" value="要设置的默认值"/>
+			<el-form-item label="名称">
+			  <el-input v-model="temp.materialName" placeholder="请输入名称" value="要设置的默认值"/>
 			</el-form-item>
-			<el-form-item label="车辆里程数(单位:千米)">
-			  <el-input v-model="temp.carMileage" placeholder="请输入车辆里程数(单位:千米)" />
+			<el-form-item label="价格(单位:元)">
+			  <el-input v-model="temp.materialPrice" placeholder="请输入价格(单位:元)" />
 			</el-form-item>
-			<el-form-item label="车辆品牌">
-			  <el-input v-model="temp.carBrand" placeholder="请输入车辆品牌" />
+			<el-form-item label="用途">
+			  <el-input v-model="temp.materialUsage" placeholder="请输入用途" />
+			</el-form-item>
+			<el-form-item label="数量">
+			  <el-input v-model="temp.materialCount" placeholder="请输入数量" />
 			</el-form-item>
 		</el-form>
 		<el-button type="danger" @click="dialogVisible = false">
@@ -184,12 +187,14 @@
 	import { setStorage, getStorage} from "@/utils/localStorage.js";
 	const _temp = {
 	  // id: '',
-	  materialName: '',
-	  materialtypeId: '',
 	  materialId: '',
-	  materialCount: '',
-	  materialUsage: '',
+	  materialtypeId: '',
+	  materialName: '',
 	  materialPrice: '',
+	  materialUsage: '',
+	  materialCount: '',
+	  
+	  
 	}
 	export default {
 		data() {
