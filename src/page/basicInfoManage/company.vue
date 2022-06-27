@@ -77,9 +77,9 @@
 		</el-table>
 
 		<el-dialog :visible.sync="dialogVisible" :title="dialogType === 'modify' ? '修改' : '新增'">
-			<el-form ref="dataForm" :model="temp" label-width="150px" label -position="right">
+			<el-form ref="dataForm" :model="temp" label-width="150px" label-position="right">
 				<el-form-item label="公司名称">
-					<el-input v-model="temp.companyName" placeholder={_temp.companyName} />
+					<el-input v-model="temp.companyName" placeholder="请输入名称" />
 				</el-form-item>
 				<el-form-item label="创建时间">
 					<el-input v-model="temp.companyTime" placeholder="请输入时间(yyyy-MM-dd)" />
