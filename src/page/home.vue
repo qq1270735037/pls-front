@@ -17,12 +17,12 @@
 		</el-header>
 
 		<el-container style="height: 100%	; border: 1px solid #eee">
-			<el-aside width="200px" style="background-color: rgb(237, 236, 246) " >
+			<el-aside width="200px" style="background-color: rgb(237, 236, 246) ">
 				<el-menu router :default-active="this.$router.path" style="height:500px">
 					<el-menu-item index="mainPage"><i class="el-icon-message"></i>首页</el-menu-item>
 					<el-submenu index="1">
 						<template slot="title"><i class="el-icon-message"></i>基本信息管理</template>
-						
+
 						<el-menu-item index="employee">人员信息管理</el-menu-item>
 						<el-menu-item index="car">车辆信息管理</el-menu-item>
 						<el-menu-item index="address">地址基本信息管理</el-menu-item>
@@ -34,12 +34,12 @@
 						<el-menu-item index="equipment">机电设备管理</el-menu-item>
 					</el-submenu>
 					<el-submenu index="2">
-					<template slot="title"><i class="el-icon-menu"></i>购销存管理</template>
-											<el-menu-item index="officeSupplies">办公耗材采购</el-menu-item>
-											<el-menu-item index="materialManage">物资购销</el-menu-item>
-											<el-menu-item index="carManage">汽车购销</el-menu-item>
-											<el-menu-item index="goodsManage">货物购销</el-menu-item>
-											<el-menu-item index="buildManage">建筑构物租售</el-menu-item>
+						<template slot="title"><i class="el-icon-menu"></i>购销存管理</template>
+						<el-menu-item index="officeSupplies">办公耗材采购</el-menu-item>
+						<el-menu-item index="materialManage">物资购销</el-menu-item>
+						<el-menu-item index="carManage">汽车购销</el-menu-item>
+						<el-menu-item index="goodsManage">货物购销</el-menu-item>
+						<el-menu-item index="buildManage">建筑构物租售</el-menu-item>
 					</el-submenu>
 					<el-submenu index="3">
 						<template slot="title"><i class="el-icon-setting"></i>导航三</template>
@@ -62,14 +62,14 @@
 			<el-main>
 				<div>
 					<el-breadcrumb class="app-breadcrumb" separator=">">
-					     <transition-group name="breadcrumb">
-					     <el-breadcrumb-item v-for="item in levelList" :key="item.path" :to="{ path: item.path }">
-					     <span>{{ item.meta.title }}</span>
-					     </el-breadcrumb-item>
-					     </transition-group>
-					     </el-breadcrumb>
+						<transition-group name="breadcrumb">
+							<el-breadcrumb-item v-for="item in levelList" :key="item.path" :to="{ path: item.path }">
+								<span>{{ item.meta.title }}</span>
+							</el-breadcrumb-item>
+						</transition-group>
+					</el-breadcrumb>
 				</div>
-				
+
 				<!-- <el-table :data="tableData">
 					<el-table-column prop="date" label="日期" width="140">
 					</el-table-column>
@@ -78,7 +78,9 @@
 					<el-table-column prop="address" label="地址">
 					</el-table-column>
 				</el-table> -->
-				<router-view><router-view></router-view></router-view>
+				<router-view>
+					<router-view></router-view>
+				</router-view>
 			</el-main>
 		</el-container>
 	</el-container>
@@ -95,46 +97,50 @@
 	} from "../utils/localStorage.js";
 	export default {
 		data() {
-			 const item = {
-			        date: '2016-05-02',
-			        name: '王小虎',
-			        address: '上海市普陀区金沙江路 1518 弄'
-			      };
+			const item = {
+				date: '2016-05-02',
+				name: '王小虎',
+				address: '上海市普陀区金沙江路 1518 弄'
+			};
 			return {
-				levelList: null,//面包屑
+				levelList: null, //面包屑
 				userAccount: "", //用户账号
 				authorityName: "", //用户类型
 				menuList: [], //用户菜单
-				tableData: Array(20).fill(item)//表格数据
+				tableData: Array(20).fill(item) //表格数据
 			}
 		},
 		watch: {
-		     $route () {
-		     this.getBreadcrumb()
-		     }
-		     },
+			$route() {
+				this.getBreadcrumb()
+			}
+		},
 		created() {
-		     this.getBreadcrumb()
-		     },	 
+			this.getBreadcrumb()
+		},
 		methods: {
-			getBreadcrumb () {
-			     let matched = this.$route.matched.filter(item => item.meta && item.meta.title)
-			     const first = matched[0]
-			     if (!this.isIndex(first)) {
-			     matched = [].concat(matched)
-			     this.levelList = matched
-			     } 
-				 else {
-			     this.levelList = [{ path: '/', meta: { title: '首页' } }]
-			     }
-			     },
-			     isIndex (route) {
-			     const redirect = route && route.redirect
-			     if (!redirect) {
-			     return false
-			     }
-			     return redirect === '/'
-			     },
+			getBreadcrumb() {
+				let matched = this.$route.matched.filter(item => item.meta && item.meta.title)
+				const first = matched[0]
+				if (!this.isIndex(first)) {
+					matched = [].concat(matched)
+					this.levelList = matched
+				} else {
+					this.levelList = [{
+						path: '/',
+						meta: {
+							title: '首页'
+						}
+					}]
+				}
+			},
+			isIndex(route) {
+				const redirect = route && route.redirect
+				if (!redirect) {
+					return false
+				}
+				return redirect === '/'
+			},
 			handleSelect(index, indexPath) {
 				console.log(index)
 				console.log(indexPath)
