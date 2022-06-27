@@ -102,7 +102,6 @@
 			  {{ scope.row.carBrand }}
 			</template>
 		  </el-table-column>
-		  </el-table-column>
 		  <el-table-column
 			fixed="right"
 			label="操作"
@@ -131,7 +130,16 @@
 			</template>
 		  </el-table-column>
 		</el-table>
-		
+    <el-pagination
+        style="margin-top: 10px;"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="page"
+        :page-sizes="[10, 20, 50, 100]"
+        :page-size="limit"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total">
+    </el-pagination>
 		<el-dialog
 		  :visible.sync="dialogVisible"
 		  :title="dialogType === 'modify' ? '修改' : '新增'"
@@ -212,18 +220,19 @@
 			initCarList(){
 				this.listLoading = true;
 				queryByCondition({}).then((res)=>{
-					 console.log(res);
-					 console.log(res.data);
+					 // console.log(res);
+					 // console.log(res.datas);
 					// consol.log(JSON.parse(res.data));
 					if(res != -1){
-						console.log("这是res\n");
-						console.log(res);
-						res.data.forEach((item, index) => {
+						// console.log("这是res\n");
+						// console.log(res);
+						res.datas.forEach((item, index) => {
 							item.index = index+1;
-							//console.log(item)
+              this.carList = res.datas;
+              setTimeout(() => {
+                this.loading = false;
+              }, 1500)
 						})
-						this.carList = res.data;
-						this.listLoading = false;
 					}
 
 				})
@@ -253,6 +262,8 @@
 			  this.resetTemp()
 			  this.dialogVisible = true
 			  this.dialogType = 'modify'
+        console.log("this item is !!:\n")
+        console.log(scope.row)
 			  this.temp = deepClone(scope.row)
 			  this.$nextTick(() => {
 				this.$refs['dataForm'].clearValidate()
