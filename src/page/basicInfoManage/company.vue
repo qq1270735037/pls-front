@@ -115,7 +115,8 @@
 
 <script>
 	import {
-		queryByName
+		queryByName,
+		update
 	} from '@/api/getCompanyinfo.js';
 	import {
 		setStorage,
@@ -125,7 +126,7 @@
 		deepClone
 	} from "@/utils/index.js";
 	const _temp = {
-		// id: '',
+		companyId: '',
 		companyName: '',
 		companyTime: '',
 		companyCity: '',
@@ -184,9 +185,10 @@
 				this.dialogVisible = true
 				this.dialogType = 'modify'
 				this.temp = deepClone(scope.row)
-				// this.$nextTick(() => {
-				// 	this.$refs['dataForm'].clearValidate()
-				// })
+				console.log(this.temp)
+				this.$nextTick(() => {
+					this.$refs['dataForm'].clearValidate()
+				})
 			},
 			del(scope) {
 				this.$confirm('确认删除该条数据吗？', '提示', {
@@ -207,15 +209,18 @@
 				if (this.listLoading) {
 					return
 				}
-				this.listLoading = true
-
-				this.$message({
-					message: '提交成功',
-					type: 'success'
+				let data=this.temp;
+				update(data).then((res) => {
+					if (res != -1) {
+						this.$message({
+							message: '提交成功',
+							type: 'success'
+						})
+					}
 				})
-				this.dialogVisible = false
-				this.loading = false
 
+				this.dialogVisible = false
+				this.init()
 			},
 			search() {
 				let company = {

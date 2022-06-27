@@ -8,3 +8,10 @@ export function queryByName(data){
 		data
 	})
 }
+export function update(data){
+	return request({
+		url: '/companyinfo/update',//请求接口
+		method: 'post',//请求方式
+		data
+	})
+}

@@ -2,7 +2,7 @@
 	<div>
 	      <el-input 
 		  style="width: 190px;margin-right: 40px;margin-top: 20px;margin-bottom: 20px;"
-	        v-model="listQuery.keyword"
+	        v-model="listQuery.carNumber"
 	        size="small"
 	        placeholder="请输入车牌号"
 	        clearable
@@ -11,6 +11,7 @@
 	      <el-button-group style="margin-right: 20px;margin-top: 20px;margin-bottom: 20px;"
 			class="filter-item">
 	        <el-button
+              :loading="searchloading"
 	          size="small"
 	          type="primary"
 	          icon="el-icon-search"
@@ -134,11 +135,11 @@
         style="margin-top: 10px;"
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
-        :current-page="page"
+        :current-page="listQuery.page"
         :page-sizes="[10, 20, 50, 100]"
-        :page-size="limit"
+        :page-size="200"
         layout="total, sizes, prev, pager, next, jumper"
-        :total="total">
+        :total="listQuery.total">
     </el-pagination>
 		<el-dialog
 		  :visible.sync="dialogVisible"
@@ -177,8 +178,9 @@
 </template>
 
 <script>
-	import { queryByCondition } from '@/api/getCarinfo.js';
+	import { queryByPage } from '@/api/getCarinfo.js';
 	import { setStorage, getStorage} from "@/utils/localStorage.js";
+  import {Message} from "element-ui";
 	const _temp = {
 	  // id: '',
 	  carNumber: '',
@@ -190,17 +192,14 @@
 	export default {
 		data() {
 			return {
-				selectData: "",//被选择的下拉
-				queryData: "",//用于条件查询
-				categoryList: [],//用于接收类型数据
+        searchloading:false, //搜索按钮显示加载
 				listLoading:true,//查询时加载遮罩
-				carList:[],
-				listQuery:{
-					page: 1,
-					limit: 20,
-					created_at: undefined,
-					status: undefined,
-					keyword: undefined
+				carList:[],       //存储表单内容
+				listQuery:{       // 查询的数据
+          limit: 10,//每页条数
+          page: 1,//当前页码
+          total: 0,//总条数
+					carNumber: "" //查询的车牌号
 				  },
 				temp: Object.assign({}, _temp),
 				dialogVisible: false,   //弹出框显示
@@ -209,29 +208,73 @@
 		},
 
 		methods: {
+      test(){
+        let data = { page:1,limit:10}
+        queryByPage(data).then((res)=>{
+            console.log("测试传参查询")
+            console.log(res)
+        })
+      },
+      //修改每页条数的时候触发
+      handleSizeChange(value){
+        this.listQuery.limit = value;
+        //发送请求,获取数据
+        this.initCarList();
+      },
+      //当页码发生改变触发
+      handleCurrentChange(value){
+        this.listQuery.page = value;
+        //发送请求,获取数据
+        this.initCarList();
+      },
+      //初始化表格
 			initCarList(){
 				this.listLoading = true;
-				queryByCondition({}).then((res)=>{
+        let data = {
+          carNumber: this.listQuery.carNumber,
+          page: this.listQuery.page,
+          limit: this.listQuery.limit
+        }
+        console.log("输入的data为：\n")
+        console.log(data)
+				queryByPage(data).then((res)=>{
 					if(res != -1){
+            //判断查询返回的结果是否有数据
+            if(res.datas.length===0){  //查询结果为空
+              this.listLoading = false;
+              Message({
+                message: "查询结果为空",
+                type: "error"
+              })
+            }
 						res.datas.forEach((item, index) => {
-							item.index = index+1;
+              //通过页数计算index
+              item.index= (this.listQuery.page-1) * this.listQuery.limit+index+1;
+              //查询结果为空
+              console.log(res.datas.length)
+
               this.carList = res.datas;
+              this.listQuery.total = res.total;
               setTimeout(() => {
-                this.loading = false;
-              }, 1500)
+                this.listLoading = false;
+              }, 1000)
 						})
+
 					}
 
 				})
 			},
+      //搜索
+      search(){
+        this.searchloading = true
+        this.initCarList()
+        setTimeout(() => {
+          this.searchloading = false;
+        }, 1500)
+      },
+      //刷新
 			refresh() {
-			 //  this.listQuery = {
-				// page: 1,
-				// limit: 20,
-				// created_at: undefined,
-				// status: undefined,
-				// keyword: undefined
-			 //  }
+        this.listQuery.page=1;
 			  this.initCarList()
 			},
 			resetTemp() {
@@ -254,9 +297,11 @@
 			  this.temp = deepClone(scope.row)
 			  this.$nextTick(() => {
 				this.$refs['dataForm'].clearValidate()
+          //TODO
 			  })
 			},
 			del(scope) {
+        //TODO
 			      this.$confirm('确认删除该条数据吗？', '提示', {
 			        confirmButtonText: '确定',
 			        cancelButtonText: '取消',
@@ -272,6 +317,15 @@
 			      })
 			    },
 			submit() {
+        if(this.dialogType==="create"){
+          console.log("新增")
+          console.log( this.temp)
+        }else  if(this.dialogType==="modify"){
+          console.log("修改")
+          console.log( this.temp)
+        }
+
+        //TODO
 			  if (this.listLoading) {
 				return
 			  }
@@ -282,53 +336,14 @@
 				  type: 'success'
 				})
 				this.dialogVisible = false
-				this.loading = false
+				this.listLoading = false
 			  }, 300)
 			}
-			// //获取类型数据
-			// initCategoryList(){
-			// 	getCategoryByCondition({}).then(res => {
-			// 		//新增一个全部,放到数组最前面
-			// 		if(res != -1){
-			// 			res.datas.unshift({categoryId : "", categoryName: "全部"});
-			// 			this.categoryList = res.datas;
-			// 		}
-			// 	});
-			// },
-			// //获取文档数据
-			// initDocList(){
-			// 	this.loading = true;
-			// 	//获取用户输入/选择的查询条件
-			// 	let data = {
-			// 		categoryId : this.selectData,
-			// 		docTitle: this.queryData
-			// 	}
-			// 	getDocByCondition(data).then((res) => {
-			// 		if(res != -1){
-			// 			this.docList = res.datas;
-			// 			this.loading = false;
-			// 		}
-			// 		//条件筛选遍历
-			// 		/* let filterArr = this.docList.filter((item, index) => {
-			// 			return item.docId % 5 == 0;
-			// 		}); */
-			// 	})
-			// },
-			// selectDoc(){
-			// 	docSelectOne({id: 105}).then()
-			// },
 		},
-		// created() {
-		//   this.initCarList();
-		// },
+
 		mounted() {			
 			this.$nextTick(() => {
 				this.initCarList();
-				// //页面初始化的时候执行
-				// this.initDocList();
-				// //this.testMap();
-				// //初始化获取类型数据
-				// this.initCategoryList();
 			})
 		},
 		
