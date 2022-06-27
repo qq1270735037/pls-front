@@ -159,7 +159,7 @@
 			  <el-input v-model="temp.carStyle" placeholder="请输入车型" />
 			</el-form-item>
 			<el-form-item label="车辆载重(单位:吨)">
-			  <el-input v-model="temp.carLoad" placeholder="请输入车辆载重(单位:吨)" />
+			  <el-input v-model="temp.carLoad" placeholder="请输入车辆载重(单位:吨)" value="要设置的默认值"/>
 			</el-form-item>
 			<el-form-item label="车辆里程数(单位:千米)">
 			  <el-input v-model="temp.carMileage" placeholder="请输入车辆里程数(单位:千米)" />
@@ -238,6 +238,10 @@
 				selectByName(data).then((res)=>{
 					this.materiallist = res.datas;
 					this.listLoading = false;
+					res.datas.forEach((item, index) => {
+						item.index = index+1;
+						//console.log(item)
+					})
 					console.log(res);
 					console.log(this.searchName);
 				});
