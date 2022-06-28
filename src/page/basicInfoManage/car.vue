@@ -31,7 +31,7 @@
 	          size="small"
 	          type="primary"
 	          icon="el-icon-plus"
-	          @click="add"
+	          @click="insert"
 	        >
 	          新增
 	        </el-button>
@@ -178,7 +178,8 @@
 </template>
 
 <script>
-	import { queryByPage } from '@/api/getCarinfo.js';
+	import { queryByPage,add,update,deleteById} from '@/api/getCarinfo.js';
+  import { deepClone } from '@/utils/index.js';
 	import { setStorage, getStorage} from "@/utils/localStorage.js";
   import {Message} from "element-ui";
 	const _temp = {
@@ -208,13 +209,6 @@
 		},
 
 		methods: {
-      test(){
-        let data = { page:1,limit:10}
-        queryByPage(data).then((res)=>{
-            console.log("测试传参查询")
-            console.log(res)
-        })
-      },
       //修改每页条数的时候触发
       handleSizeChange(value){
         this.listQuery.limit = value;
@@ -235,8 +229,8 @@
           page: this.listQuery.page,
           limit: this.listQuery.limit
         }
-        console.log("输入的data为：\n")
-        console.log(data)
+        // console.log("输入的data为：\n")
+        // console.log(data)
 				queryByPage(data).then((res)=>{
 					if(res != -1){
             //判断查询返回的结果是否有数据
@@ -250,14 +244,11 @@
 						res.datas.forEach((item, index) => {
               //通过页数计算index
               item.index= (this.listQuery.page-1) * this.listQuery.limit+index+1;
-              //查询结果为空
-              console.log(res.datas.length)
-
               this.carList = res.datas;
               this.listQuery.total = res.total;
               setTimeout(() => {
                 this.listLoading = false;
-              }, 1000)
+              }, 200)
 						})
 
 					}
@@ -280,7 +271,7 @@
 			resetTemp() {
 			  this.temp = Object.assign({}, _temp)
 			},
-			add() {
+			insert() {
 			  this.resetTemp()
 			  this.dialogVisible = true
 			  this.dialogType = 'create'
@@ -292,52 +283,57 @@
 			  this.resetTemp()
 			  this.dialogVisible = true
 			  this.dialogType = 'modify'
-        console.log("this item is !!:\n")
-        console.log(scope.row)
+        // console.log("this item is !!:\n")
+        // console.log(scope.row)
 			  this.temp = deepClone(scope.row)
 			  this.$nextTick(() => {
 				this.$refs['dataForm'].clearValidate()
-          //TODO
 			  })
 			},
 			del(scope) {
-        //TODO
 			      this.$confirm('确认删除该条数据吗？', '提示', {
 			        confirmButtonText: '确定',
 			        cancelButtonText: '取消',
 			        type: 'warning'
 			      }).then(() => {
-			        setTimeout(() => {
-			          this.list.splice(scope.$index, 1)
-			          this.$message({
-			            message: '删除成功',
-			            type: 'success'
-			          })
-			        }, 300)
+              deleteById({id:scope.row.carId}).then(()=>{
+                this.initCarList()
+                setTimeout(() => {
+                  this.list.splice(scope.$index, 1)  //从这个位置删除一个元素
+                  this.$message({
+                    message: '删除成功',
+                    type: 'success'
+                  })
+                }, 300)
+              })
+
 			      })
 			    },
 			submit() {
-        if(this.dialogType==="create"){
-          console.log("新增")
-          console.log( this.temp)
-        }else  if(this.dialogType==="modify"){
-          console.log("修改")
-          console.log( this.temp)
-        }
-
-        //TODO
 			  if (this.listLoading) {
 				return
 			  }
 			  this.listLoading = true
+        //判断新增还是修改
+        if(this.dialogType==="create"){
+          // console.log("新增")
+          // console.log( this.temp)
+          add(this.temp)
+          this.initCarList()
+        }else  if(this.dialogType==="modify"){
+          // console.log("修改")
+          // console.log( this.temp)
+          update(this.temp);
+          this.initCarList()
+        }
 			  setTimeout(() => {
 				this.$message({
-				  message: '提交成功',
+				  message: '成功',
 				  type: 'success'
 				})
 				this.dialogVisible = false
 				this.listLoading = false
-			  }, 300)
+			  }, 100)
 			}
 		},
 
