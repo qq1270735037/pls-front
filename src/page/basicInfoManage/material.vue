@@ -181,7 +181,7 @@
 
 <script>
 	// import { queryByCondition } from '@/api/getCarinfo.js';
-	import { selectAll,selectByName,edit} from '@/api/getMaterialinfo.js';
+	import { selectAll,selectByName,edit,addByName,deleteById} from '@/api/getMaterialinfo.js';
 	import { setStorage, getStorage} from "@/utils/localStorage.js";
 	import {deepClone} from "@/utils/index.js";
 	const _temp = {
@@ -270,6 +270,21 @@
 			  this.$nextTick(() => {
 				this.$refs['dataForm'].clearValidate()
 			  })
+			  // addByName(temp).then((res)=>{
+			  // 	console.log(res);
+			  // 	if(res.code==200){
+			  // 		this.$message({
+			  // 		  message: '提交成功',
+			  // 		  type: 'success'
+			  // 		})
+			  // 	}
+			  // 	else{
+			  // 		this.$message({
+			  // 		  message: '提交失败',
+			  // 		  type: 'success'
+			  // 		})
+			  // 	}
+			  // });
 			},
 			edit(scope) {
 			  this.resetTemp()
@@ -287,13 +302,32 @@
 			        type: 'warning'
 			      }).then(() => {
 			        setTimeout(() => {
-			          this.list.splice(scope.$index, 1)
-			          this.$message({
-			            message: '删除成功',
-			            type: 'success'
-			          })
-			        }, 300)
+						
+			          let data={
+						  materialId:scope.row.materialId
+					  }
+					  deleteById(data).then((res)=>{
+						  console.log(res);
+						  console.log(data.materialId);
+						  if(res.code==200){
+						  	this.$message({
+						  	  message: '删除成功',
+						  	  type: 'success'
+						  	})
+						  }
+						  else{
+						  	this.$message({
+						  	  message: '删除失败',
+						  	  type: 'success'
+						  	})
+						  }
+					  })
+			        },)
+					setTimeout(() =>{
+					    this.initMateriallist()
+					},300);
 			      })
+				  
 			    },
 			submit() {
 			  if (this.listLoading) {
@@ -302,61 +336,53 @@
 			  this.listLoading = true
 			  setTimeout(() => {
 				  let data=this.temp;
-				edit(data).then((res)=>{
-					console.log(res);
-					if(res.code==200){
-						this.$message({
-						  message: '提交成功',
-						  type: 'success'
-						})
-					}
-					else{
-						this.$message({
-						  message: '提交失败',
-						  type: 'success'
-						})
-					}
-				});
+				  if(this.dialogType=='modify'){
+					  edit(data).then((res)=>{
+					  	console.log(res);
+					  	if(res.code==200){
+					  		this.$message({
+					  		  message: '提交成功',
+					  		  type: 'success'
+					  		})
+					  	}
+					  	else{
+					  		this.$message({
+					  		  message: '提交失败',
+					  		  type: 'success'
+					  		})
+					  	}
+					  });
+				  }
+				  else if(this.dialogType=='create'){
+					  addByName(data).then((res)=>{
+					  	console.log(res);
+					  	if(res.code==200){
+					  		this.$message({
+					  		  message: '新增成功',
+					  		  type: 'success'
+					  		})
+					  	}
+					  	else{
+					  		this.$message({
+					  		  message: '新增失败',
+					  		  type: 'success'
+					  		})
+					  	}
+					  });
+				  }
+
 				this.dialogVisible = false
 				// this.loading = false
 				this.listLoading = false
 				
 			  })
-			  this.initMateriallist()
+			  
+			  setTimeout(() =>{
+			      this.initMateriallist()
+			  },300);
 			  console.log("shengxiao ")
 			}
-			// //获取类型数据
-			// initCategoryList(){
-			// 	getCategoryByCondition({}).then(res => {
-			// 		//新增一个全部,放到数组最前面
-			// 		if(res != -1){
-			// 			res.datas.unshift({categoryId : "", categoryName: "全部"});
-			// 			this.categoryList = res.datas;
-			// 		}
-			// 	});
-			// },
-			// //获取文档数据
-			// initDocList(){
-			// 	this.loading = true;
-			// 	//获取用户输入/选择的查询条件
-			// 	let data = {
-			// 		categoryId : this.selectData,
-			// 		docTitle: this.queryData
-			// 	}
-			// 	getDocByCondition(data).then((res) => {
-			// 		if(res != -1){
-			// 			this.docList = res.datas;
-			// 			this.loading = false;
-			// 		}
-			// 		//条件筛选遍历
-			// 		/* let filterArr = this.docList.filter((item, index) => {
-			// 			return item.docId % 5 == 0;
-			// 		}); */
-			// 	})
-			// },
-			// selectDoc(){
-			// 	docSelectOne({id: 105}).then()
-			// },
+			
 		},
 		// created() {
 		//   this.initCarList();
@@ -364,11 +390,6 @@
 		mounted() {			
 			this.$nextTick(() => {
 				this.initMateriallist();
-				// //页面初始化的时候执行
-				// this.initDocList();
-				// //this.testMap();
-				// //初始化获取类型数据
-				// this.initCategoryList();
 			})
 		},
 		

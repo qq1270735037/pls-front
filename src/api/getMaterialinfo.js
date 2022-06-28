@@ -21,3 +21,17 @@ export function edit(data){
 		data
 	})
 }
+export function addByName(data){
+	return request({
+		url: '/matetialinfo/add',//请求接口
+		method: 'post',//请求方式
+		data
+	})
+}
+export function deleteById(data){
+	return request({
+		url: '/matetialinfo/deleteById',//请求接口
+		method: 'post',//请求方式
+		data
+	})
+}
