@@ -14,8 +14,8 @@
 			</el-button>
 		</el-button-group>
 
-		<el-table v-loading="listLoading" :data="companyList.slice((cur_page-1)*pageSize,cur_page*pageSize)" element-loading-text="正在疯狂加载" border fit height="500px"
-			class="table-container" highlight-current-row>
+		<el-table v-loading="listLoading" :data="companyList.slice((cur_page-1)*pageSize,cur_page*pageSize)"
+			element-loading-text="正在疯狂加载" border fit height="500px" class="table-container" highlight-current-row>
 			<el-table-column label="序号" width="100" align="center">
 				<template slot-scope="scope">
 					{{ scope.row.index }}
@@ -74,21 +74,14 @@
 					</el-button-group>
 				</template>
 			</el-table-column>
-			
+
 		</el-table>
-				<!-- 分页组件ui -->
-			    <div style="margin-top:20px" class="pagination">
-			        <el-pagination
-			        background
-			        @current-change="handleCurrentChange"
-			        @size-change="handleSizeChange"
-			        :current-page="cur_page"
-			        :page-sizes="[10,15,20,50]"
-			        :page-size="pageSize"
-			        layout="total, sizes, prev, pager, next, jumper"
-			        :total="total"
-			        ></el-pagination>
-			    </div>
+		<!-- 分页组件ui -->
+		<div style="margin-top:20px" class="pagination">
+			<el-pagination background @current-change="handleCurrentChange" @size-change="handleSizeChange"
+				:current-page="cur_page" :page-sizes="[10,15,20,50]" :page-size="pageSize"
+				layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
+		</div>
 		<el-dialog :visible.sync="dialogVisible" :title="dialogType === 'modify' ? '修改' : '新增'">
 			<el-form ref="dataForm" :model="temp" label-width="150px" label-position="right">
 				<el-form-item label="公司名称">
@@ -131,7 +124,7 @@
 		queryByName,
 		update,
 		insert,
-		deleteCompany//用delete不行，应该是名称被占用了
+		deleteCompany //用delete不行，应该是名称被占用了
 	} from '@/api/getCompanyinfo.js';
 	import {
 		setStorage,
@@ -163,7 +156,7 @@
 				cur_page: 1,
 				pageSize: 10,
 				//数据条数
-				total :0
+				total: 0
 
 			}
 		},
@@ -180,7 +173,7 @@
 							//console.log(item)
 						})
 						this.companyList = res.datas;
-						this.total=this.companyList.length;
+						this.total = this.companyList.length;
 						this.listLoading = false;
 					}
 
@@ -224,9 +217,9 @@
 						})
 					}, 300)
 					this.temp = deepClone(scope.row);
-					let deldata=this.temp;
+					let deldata = this.temp;
 					// deldata.companyTime=Date.parse(new Date(this.temp.companyTime));
-					deleteCompany(deldata).then((res)=>{
+					deleteCompany(deldata).then((res) => {
 						if (res != -1) {
 							// this.$message({
 							// 	message: '删除成功',
@@ -254,9 +247,8 @@
 							this.init()
 						}
 					})
-				}
-				else{
-					insert(data).then((res)=>{
+				} else {
+					insert(data).then((res) => {
 						if (res != -1) {
 							this.$message({
 								message: '提交成功',
@@ -287,17 +279,17 @@
 			},
 			// 分页导航改变页码大小在method里定义
 			handleSizeChange(val) {
-				this.pageSize=val;
-				this.cur_page=1;
-				console.log(this.companyList.slice((this.cur_page-1)*this.pageSize,this.cur_page*this.pageSize));
+				this.pageSize = val;
+				this.cur_page = 1;
+				//console.log(this.companyList.slice((this.cur_page - 1) * this.pageSize, this.cur_page * this.pageSize));
 			},
 			// 分页导航
 			handleCurrentChange(val) {
-				console.log(val);
-				this.cur_page=val;
-				console.log(this.cur_page);
-				console.log(this.companyList.slice((this.cur_page-1)*this.pageSize,this.cur_page*this.pageSize));
-    }
+				//console.log(val);
+				this.cur_page = val;
+				//console.log(this.cur_page);
+				//console.log(this.companyList.slice((this.cur_page - 1) * this.pageSize, this.cur_page * this.pageSize));
+			}
 		},
 
 		mounted() {
