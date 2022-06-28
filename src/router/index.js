@@ -14,7 +14,7 @@ import company from "@/page/basicInfoManage/company";
 import employee from "@/page/basicInfoManage/employee";
 import equipment from "@/page/basicInfoManage/equipment";
 import goods from "@/page/basicInfoManage/goods";
-import identity from "@/page/basicInfoManage/identity";
+import certification from "@/page/basicInfoManage/certification";
 import material from "@/page/basicInfoManage/material";
 
 import buildManage from "@/page/buyAndSaleManage/buildManage";
@@ -120,9 +120,9 @@ export default new Router({
 							  },
 						  },
 						  {
-						  	  path:'/identity',
-						  	  name:'identity',
-						  	  component:identity,
+						  	  path:'/certification',
+						  	  name:'certification',
+						  	  component:certification,
 							  meta: {
 							  	title:'证件信息'
 							  },
