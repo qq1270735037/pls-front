@@ -11,14 +11,14 @@
 		      />
 		      <el-button-group style="margin-right: 20px;margin-top: 20px;margin-bottom: 20px;"
 				class="filter-item">
-		        <el-button
-		          size="small"
-		          type="primary"
-		          icon="el-icon-search"
-		          @click="search"
-		        >
-		          搜索
-		        </el-button>
+<!--		        <el-button-->
+<!--		          size="small"-->
+<!--		          type="primary"-->
+<!--		          icon="el-icon-search"-->
+<!--		          @click="search"-->
+<!--		        >-->
+<!--		          搜索-->
+<!--		        </el-button>-->
 		        <el-button
 		          size="small"
 		          type="primary"
@@ -123,28 +123,39 @@
 			  :visible.sync="dialogVisible"
 			  :title="dialogType === 'modify' ? '修改' : '新增'"
 			>
-			<el-form
-				ref="dataForm"
-				:model="temp"
-				label-width="150px"
-				label-position="right"
-			  >
-				
-			</el-form>
+        <el-form
+            ref="dataForm"
+            :model="temp"
+            label-width="150px"
+            label-position="right"
+        >
+          <el-form-item label="省份">
+            <el-input v-model="temp.addressProvince" placeholder="请输入省份" />
+          </el-form-item>
+          <el-form-item label="城市">
+            <el-input v-model="temp.addressCity" placeholder="请输入城市" />
+          </el-form-item>
+          <el-form-item label="地区">
+            <el-input v-model="temp.addressName" placeholder="请输入地区" />
+          </el-form-item>
+        </el-form>
 			<el-button type="danger" @click="dialogVisible = false">
 			  取消
 			</el-button>
 			<el-button type="primary" @click="submit">
 			  确定
 			</el-button>
+
+
 		 </el-dialog>
 		
 	</div>
 </template>
 
 <script>
-	import { queryByCondition } from '@/api/getAddressInfo.js';
+	import { queryByCondition,addAddress,update,deleteAddress } from '@/api/getAddressInfo.js';
 	import { setStorage, getStorage} from "@/utils/localStorage.js";
+  import {deepClone} from "@/utils/index.js";
 	const _temp = {
 	  addressProvince: '',
 	  addressCity: '',
@@ -189,57 +200,83 @@
 				})
 			},
 			refresh() {
-	
 			  this.initAddressList()
 			},
 			resetTemp() {
 			  this.temp = Object.assign({}, _temp)
 			},
 			add() {
-			  this.resetTemp()
-			  this.dialogVisible = true
-			  this.dialogType = 'create'
-			  this.$nextTick(() => {
-				this.$refs['dataForm'].clearValidate()
-			  })
+        this.resetTemp()
+        this.dialogVisible = true
+        this.dialogType = 'create'
+        this.$nextTick(() => {
+          this.$refs['dataForm'].clearValidate()
+        })
 			},
 			edit(scope) {
-			  this.resetTemp()
-			  this.dialogVisible = true
-			  this.dialogType = 'modify'
-			  this.temp = deepClone(scope.row)
-			  this.$nextTick(() => {
-				this.$refs['dataForm'].clearValidate()
-			  })
+        this.resetTemp()
+        this.dialogVisible = true
+        this.dialogType = 'modify'
+        this.temp = deepClone(scope.row)
+        this.$nextTick(() => {
+          this.$refs['dataForm'].clearValidate()
+        })
 			},
-			del(scope) {
-			      this.$confirm('确认删除该条数据吗？', '提示', {
-			        confirmButtonText: '确定',
-			        cancelButtonText: '取消',
-			        type: 'warning'
-			      }).then(() => {
-			        setTimeout(() => {
-			          this.list.splice(scope.$index, 1)
-			          this.$message({
-			            message: '删除成功',
-			            type: 'success'
-			          })
-			        }, 300)
-			      })
-			    },
+      del(scope) {
+        this.$confirm('确认删除该条数据吗？', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          setTimeout(() => {
+            this.$message({
+              message: '删除成功',
+              type: 'success'
+            })
+          }, 300)
+          this.temp = deepClone(scope.row);
+          let deldata=this.temp;
+          deleteAddress(deldata).then((res)=>{
+            if (res != -1) {
+              // this.$message({
+              // 	message: '删除成功',
+              // 	type: 'success'
+              // })
+              this.init()
+            }
+          })
+        })
+      },
 			submit() {
-			  if (this.listLoading) {
-				return
-			  }
-			  this.listLoading = true
-			  setTimeout(() => {
-				this.$message({
-				  message: '提交成功',
-				  type: 'success'
-				})
-				this.dialogVisible = false
-				this.loading = false
-			  }, 300)
+        if (this.listLoading) {
+          return
+        }
+        let data = this.temp;
+        // data.companyTime = Date.parse(new Date(this.temp.companyTime));
+        if (this.dialogType == 'modify') {
+          update(data).then((res) => {
+            if (res != -1) {
+              this.$message({
+                message: '添加成功',
+                type: 'success'
+              })
+              this.dialogVisible = false
+              this.initAddressList()
+            }
+          })
+        }
+        else{
+          addAddress(data).then((res)=>{
+            if (res != -1) {
+              this.$message({
+                message: '修改成功',
+                type: 'success'
+              })
+              this.dialogVisible = false
+              this.initAddressList()
+            }
+          })
+        }
 			}
 			
 		},
@@ -247,7 +284,6 @@
 		mounted() {			
 			this.$nextTick(() => {
 				this.initAddressList();
-				
 			})
 		},
 		
