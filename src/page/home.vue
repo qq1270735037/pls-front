@@ -28,7 +28,7 @@
 						<el-menu-item index="address">地址基本信息管理</el-menu-item>
 						<el-menu-item index="company">公司信息管理</el-menu-item>
 						<el-menu-item index="material">物资管理</el-menu-item>
-						<el-menu-item index="identity">证件信息管理</el-menu-item>
+						<el-menu-item index="certification">证件信息管理</el-menu-item>
 						<el-menu-item index="goods">货物信息管理</el-menu-item>
 						<el-menu-item index="build">建筑信息管理</el-menu-item>
 						<el-menu-item index="equipment">机电设备管理</el-menu-item>

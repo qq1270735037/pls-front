@@ -218,13 +218,9 @@
 					}, 300)
 					this.temp = deepClone(scope.row);
 					let deldata = this.temp;
-					// deldata.companyTime=Date.parse(new Date(this.temp.companyTime));
+					deldata.companyTime=Date.parse(new Date(this.temp.companyTime));
 					deleteCompany(deldata).then((res) => {
-						if (res != -1) {
-							// this.$message({
-							// 	message: '删除成功',
-							// 	type: 'success'
-							// })
+						if (res != -1) {						
 							this.init()
 						}
 					})
