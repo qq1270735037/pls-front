@@ -321,11 +321,12 @@
 						  	  type: 'success'
 						  	})
 						  }
+						  
 					  })
+					  setTimeout(() =>{
+					      this.initMateriallist()
+					  },500);
 			        },)
-					setTimeout(() =>{
-					    this.initMateriallist()
-					},300);
 			      })
 				  
 			    },
