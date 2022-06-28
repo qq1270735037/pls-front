@@ -48,7 +48,6 @@
 		  highlight-current-row
 		>
 		<el-table-column
-			fixed
 			label="序号"
 			width="100"
 			align="center"
@@ -58,7 +57,6 @@
 			</template>
 		</el-table-column>
 		  <el-table-column
-			fixed
 			label="车牌号"
 			width="200"
 			align="center"
