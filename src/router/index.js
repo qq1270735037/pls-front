@@ -23,6 +23,8 @@ import carManage from "@/page/buyAndSaleManage/carManage";
 import goodsManage from "@/page/buyAndSaleManage/goodsManage";
 import officeSupplies from "@/page/buyAndSaleManage/officeSupplies";
 
+import carFixLog from "@/page/carFix/carFixLog";
+import materialUseLog from "@/page/carFix/materialUseLog";
 
 import test from "@/page/test"
 Vue.use(Router);
@@ -186,6 +188,33 @@ export default new Router({
 								title:'办公耗材购买'
 							}
 						}		
+					]
+				},
+				{
+					path:'/carFix',
+					name:'carFix',
+					component:basic,
+					//redirect: "/officeSupplies",
+					meta: {
+						title:'汽车修检'
+					},
+					children:[
+						{
+							path:'/carFixLog',
+							name:'carFixLog',
+							component:carFixLog,
+							meta:{
+								title:'车辆维修记录'
+							}
+						},
+						{
+							path:'/materialUseLog',
+							name:'materialUseLog',
+							component:materialUseLog,
+							meta:{
+								title:'物资使用记录'
+							}
+						}
 					]
 				}
 

@@ -270,9 +270,10 @@
 						// console.log(company);
 						res.datas.forEach((item, index) => {
 							item.index = index + 1;
-							console.log(item)
+							//console.log(item)
 						})
 						this.companyList = res.datas;
+						this.total=this.companyList.length;
 						this.listLoading = false;
 					}
 				})
