@@ -323,12 +323,11 @@
 						  }
 						  
 					  })
-					  setTimeout(() =>{
-					      this.initMateriallist()
-					  },500);
 			        },)
 			      })
-				  
+				  setTimeout(() =>{
+				      this.initMateriallist()
+				  },300);
 			    },
 			submit() {
 			  if (this.listLoading) {

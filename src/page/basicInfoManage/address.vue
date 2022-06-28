@@ -39,7 +39,7 @@
 			  
 		<el-table
 			  v-loading="listLoading"
-			  :data="addressList"
+			  :data="addressList.slice((cur_page-1)*pageSize,cur_page*pageSize)"
 			  element-loading-text="正在疯狂加载"
 			  border
 			  fit
@@ -118,7 +118,12 @@
 				</template>
 			  </el-table-column>
 			</el-table>
-			
+      <!-- 分页组件ui -->
+      <div style="margin-top:20px" class="pagination">
+        <el-pagination background @current-change="handleCurrentChange" @size-change="handleSizeChange"
+                       :current-page="cur_page" :page-sizes="[10,15,20,50]" :page-size="pageSize"
+                       layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
+      </div>
 			<el-dialog
 			  :visible.sync="dialogVisible"
 			  :title="dialogType === 'modify' ? '修改' : '新增'"
@@ -155,6 +160,7 @@
 <script>
 	import { queryByCondition,addAddress,update,deleteAddress } from '@/api/getAddressInfo.js';
 	import { setStorage, getStorage} from "@/utils/localStorage.js";
+  import Pagination from '@/components/Pagination';
   import {deepClone} from "@/utils/index.js";
   import {Message} from "element-ui";
 	const _temp = {
@@ -163,37 +169,35 @@
 	  addressName: '',
 	}
 	export default {
+    components: {
+      Pagination
+    },
 		data() {
 			return {
 
 				listLoading:true,//查询时加载遮罩
         inputData:"",//输入的条件
 				addressList:[],
-				listQuery:{
-          limit: 10,//每页条数
-          page: 1,//当前页码
-          total: 0,//总条数
-				  },
 				temp: Object.assign({}, _temp),
 				dialogVisible: false,   //弹出框显示
 				dialogType: 'create',
+        cur_page: 1,
+        pageSize: 10,
+        //数据条数
+        total: 0
 			}
 		},
 	
 		methods: {
 			initAddressList(){
 				this.listLoading = true;
-        // let data = {
-        //   addressName: this.listQuery.addressName,
-        //   page: this.listQuery.page,
-        //   limit: this.listQuery.limit
-        // }
 				queryByCondition({}).then((res)=>{
 					if(res != -1){
 						res.datas.forEach((item, index) => {
 							item.index = index+1;
 						})
 						this.addressList = res.datas;
+						this.total = this.addressList.length;
 						this.listLoading = false;
 					}
 	
@@ -286,7 +290,17 @@
             }
           })
         }
-			}
+			},
+
+      // 分页导航改变页码大小在method里定义
+      handleSizeChange(val) {
+        this.pageSize = val;
+        this.cur_page = 1;
+      },
+      // 分页导航
+      handleCurrentChange(val) {
+        this.cur_page = val;
+      }
 			
 		},
 		
