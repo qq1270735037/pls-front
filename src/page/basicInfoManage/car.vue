@@ -230,6 +230,7 @@
         // console.log("输入的data为：\n")
         // console.log(data)
 				queryByPage(data).then((res)=>{
+          console.log(res)
 					if(res != -1){
             //判断查询返回的结果是否有数据
             if(res.datas.length===0){  //查询结果为空

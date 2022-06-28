@@ -3,7 +3,7 @@
 	<el-container style="height: 100%;">
 		<el-header style="font-size: 12px;">
 			<span class="el-menu-item menu-text"
-				style="font-size: 25px;font-weight: bolder;color:white;width:250px;">攀枝花管理系统</span>
+				style="font-size: 25px;font-weight: bolder;color:white;width:250px;">攀枝花物流管理平台</span>
 			<!-- 			    <el-menu-item v-for="(item, index) in menuList" :key="index" style="width: 128px;" :index="item.path" :route="{path : item.path,query: {childrenMenus: JSON.stringify(item.children)}}"><i :class="item.icon"></i> {{item.title}}</el-menu-item> -->
 			<!-- <el-menu-item index="/managerPage" :route="{path :'/managerPage'}"><i class="el-icon-s-tools"></i> 系统管理</el-menu-item> -->
 			<el-popconfirm confirm-button-text='退出' cancel-button-text='点错了' icon="el-icon-info" icon-color="red"
