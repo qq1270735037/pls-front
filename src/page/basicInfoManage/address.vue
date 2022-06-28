@@ -228,23 +228,16 @@
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          setTimeout(() => {
-            this.$message({
-              message: '删除成功',
-              type: 'success'
-            })
-          }, 300)
-          this.temp = deepClone(scope.row);
-          let deldata=this.temp;
-          deleteAddress(deldata).then((res)=>{
-            if (res != -1) {
-              // this.$message({
-              // 	message: '删除成功',
-              // 	type: 'success'
-              // })
-              this.init()
-            }
+          deleteAddress({id:scope.row.addressId}).then(()=>{
+            this.initAddressList()
+            setTimeout(() => {
+              this.$message({
+                message: '删除成功',
+                type: 'success'
+              })
+            }, 300)
           })
+
         })
       },
 			submit() {
@@ -257,7 +250,7 @@
           update(data).then((res) => {
             if (res != -1) {
               this.$message({
-                message: '添加成功',
+                message: '修改成功',
                 type: 'success'
               })
               this.dialogVisible = false
@@ -269,7 +262,7 @@
           addAddress(data).then((res)=>{
             if (res != -1) {
               this.$message({
-                message: '修改成功',
+                message: '添加成功',
                 type: 'success'
               })
               this.dialogVisible = false
