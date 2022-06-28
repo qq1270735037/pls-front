@@ -6,7 +6,7 @@
 		  style="width: 190px;margin-right: 40px;margin-top: 20px;margin-bottom: 20px;"
 	        v-model="searchName"
 	        size="small"
-	        placeholder="请输入证件号"
+	        placeholder="请输入证件编号"
 	        clearable
 	        class="filter-item"
 	      />
@@ -78,7 +78,7 @@
 			</template>
 		  </el-table-column>
 		  <el-table-column
-			label="证书名"
+			label="证件名"
 			width="150"
 			align="center"
 		  >
