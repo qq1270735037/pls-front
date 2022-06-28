@@ -116,7 +116,9 @@
 <script>
 	import {
 		queryByName,
-		update
+		update,
+		insert,
+		deleteCompany//用delete不行，应该是名称被占用了
 	} from '@/api/getCompanyinfo.js';
 	import {
 		setStorage,
@@ -185,7 +187,7 @@
 				this.dialogVisible = true
 				this.dialogType = 'modify'
 				this.temp = deepClone(scope.row)
-				console.log(this.temp)
+				//console.log(this.temp)
 				this.$nextTick(() => {
 					this.$refs['dataForm'].clearValidate()
 				})
@@ -197,30 +199,56 @@
 					type: 'warning'
 				}).then(() => {
 					setTimeout(() => {
-						this.list.splice(scope.$index, 1)
+						//this.list.splice(scope.$index, 1)
 						this.$message({
 							message: '删除成功',
 							type: 'success'
 						})
 					}, 300)
+					this.temp = deepClone(scope.row);
+					let deldata=this.temp;
+					deldata.companyTime=Date.parse(new Date(this.temp.companyTime));
+					deleteCompany(deldata).then((res)=>{
+						if (res != -1) {
+							// this.$message({
+							// 	message: '删除成功',
+							// 	type: 'success'
+							// })
+							this.init()
+						}
+					})
 				})
 			},
 			submit() {
 				if (this.listLoading) {
 					return
 				}
-				let data=this.temp;
-				update(data).then((res) => {
-					if (res != -1) {
-						this.$message({
-							message: '提交成功',
-							type: 'success'
-						})
-					}
-				})
-
-				this.dialogVisible = false
-				this.init()
+				let data = this.temp;
+				data.companyTime = Date.parse(new Date(this.temp.companyTime));
+				if (this.dialogType == 'modify') {
+					update(data).then((res) => {
+						if (res != -1) {
+							this.$message({
+								message: '提交成功',
+								type: 'success'
+							})
+							this.dialogVisible = false
+							this.init()
+						}
+					})
+				}
+				else{
+					insert(data).then((res)=>{
+						if (res != -1) {
+							this.$message({
+								message: '提交成功',
+								type: 'success'
+							})
+							this.dialogVisible = false
+							this.init()
+						}
+					})
+				}
 			},
 			search() {
 				let company = {
