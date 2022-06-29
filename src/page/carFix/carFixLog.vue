@@ -52,16 +52,7 @@
 					{{ scope.row.fixId }}
 				</template>
 			</el-table-column>
-			<!-- <el-table-column label="联系人" width="200" align="center">
-				<template slot-scope="scope">
-					{{ scope.row.companyPerson }}
-				</template>
-			</el-table-column>
-			<el-table-column label="联系电话" width="200" align="center">
-				<template slot-scope="scope">
-					{{ scope.row.companyMobile }}
-				</template>
-			</el-table-column> -->
+
 			<el-table-column fixed="right" label="操作" width="200" align="left">
 				<template slot-scope="scope">
 					<el-button-group>
@@ -84,9 +75,7 @@
 		</div>
 		<el-dialog :visible.sync="dialogVisible" :title="dialogType === 'modify' ? '修改' : '新增'">
 			<el-form ref="dataForm" :model="temp" label-width="150px" label-position="right">
-				<!-- <el-form-item label="维修记录单号">
-					<el-input v-model="temp.fixId" placeholder="请输入名称" :disabled="true"/>
-				</el-form-item> -->
+				
 				<el-form-item label="车辆编号">
 					<el-input v-model="temp.carId" placeholder="请输入车辆编号" />
 				</el-form-item>
@@ -102,12 +91,7 @@
 				<el-form-item label="维修开销">
 					<el-input v-model="temp.fixMoney" placeholder="请输入本次维修开销" />
 				</el-form-item>
-				<!-- <el-form-item label="联系人">
-					<el-input v-model="temp.companyPerson" placeholder="请输入姓名" />
-				</el-form-item>
-				<el-form-item label="公司联系方式">
-					<el-input v-model="temp.companyMobile" placeholder="请输入电话号码" />
-				</el-form-item> -->
+				
 			</el-form>
 			<el-button type="danger" @click="dialogVisible = false">
 				取消
@@ -163,11 +147,10 @@
 				this.listLoading = true;
 				queryByName({}).then((res) => {
 					if (res != -1) {
-						// console.log("这是res\n");
-						// console.log(res);
+
 						res.datas.forEach((item, index) => {
 							item.index = index + 1;
-							//console.log(item)
+
 						})
 						this.fixList = res.datas;
 						this.total = this.fixList.length;
@@ -195,7 +178,7 @@
 				this.dialogVisible = true
 				this.dialogType = 'modify'
 				this.temp = deepClone(scope.row)
-				//console.log(this.temp)
+
 				this.$nextTick(() => {
 					this.$refs['dataForm'].clearValidate()
 				})
@@ -217,7 +200,7 @@
 					let deldata = this.temp;
 					deldata.fixStarttime=Date.parse(new Date(this.temp.fixStarttime));
 					deldata.fixEndtime=Date.parse(new Date(this.temp.fixEndtime));
-					deleteCompany(deldata).then((res) => {
+					deleteFixLog(deldata).then((res) => {
 						if (res != -1) {
 							this.init()
 						}
@@ -256,13 +239,13 @@
 				}
 			},
 			search() {
-				let company = {
-					companyName: this.inputData
+				let fixLog = {
+					fixName: this.inputData
 				}
 				this.listLoading = true;
-				queryByName(company).then((res) => {
+				queryByName(fixLog).then((res) => {
 					if (res != -1) {
-						// console.log(company);
+
 						res.datas.forEach((item, index) => {
 							item.index = index + 1;
 							//console.log(item)
