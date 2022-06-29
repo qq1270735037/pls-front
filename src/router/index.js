@@ -26,6 +26,12 @@ import officeSupplies from "@/page/buyAndSaleManage/officeSupplies";
 import carFixLog from "@/page/carFix/carFixLog";
 import materialUseLog from "@/page/carFix/materialUseLog";
 
+import carOperation from "@/page/transportationSchedule/carOperation";
+import carrierBusiness from "@/page/transportationSchedule/carrierBusiness";
+
+import advertisement from "@/page/cooperation/advertisement";
+import communication from  "@/page/cooperation/communication";
+
 import test from "@/page/test"
 Vue.use(Router);
 
@@ -216,8 +222,61 @@ export default new Router({
 							}
 						}
 					]
-				}
-
+				},
+				  {
+					  path:'/transportationSchedule',
+					  name:'transportationSchedule',
+					  component:basic,
+					  //redirect: "/officeSupplies",
+					  meta: {
+						  title:'运输调度'
+					  },
+					  children:[
+						  {
+							  path:'/carOperation',
+							  name:'carOperation',
+							  component:carOperation,
+							  meta:{
+								  title:'单车运营记录'
+							  }
+						  },
+						  {
+							  path:'/carrierBusiness',
+							  name:'carrierBusiness',
+							  component:carrierBusiness,
+							  meta:{
+								  title:'承运商业务记录'
+							  }
+						  }
+					  ]
+				  },
+				  {
+					  path:'/cooperation',
+					  name:'cooperation',
+					  component:basic,
+					  //redirect: "/officeSupplies",
+					  meta: {
+						  title:'对外合作'
+					  },
+					  children:[
+						  {
+							  path:'/communication',
+							  name:'communication',
+							  component:communication,
+							  meta:{
+								  title:'信息交流'
+							  }
+						  },
+						  {
+							  path:'/advertisement',
+							  name:'advertisement',
+							  component:advertisement,
+							  meta:{
+								  title:'广告信息交流'
+							  }
+						  }
+					  ]
+				  }
 			  ]
 		}
 	]
