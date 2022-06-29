@@ -29,3 +29,10 @@ export function deleteCarChange(data){
 		data
 	})
 }
+export function saleCar(data){
+	return request({
+		url: '/carchange/saleCar',//请求接口
+		method: 'post',//请求方式
+		data
+	})
+}

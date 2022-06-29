@@ -224,7 +224,7 @@
 					}, 300)
 					this.temp = deepClone(scope.row);
 					let deldata = this.temp;
-					//deldata.companyTime=Date.parse(new Date(this.temp.companyTime));
+					deldata.companyTime=Date.parse(new Date(this.temp.companyTime));
 					deleteCompany(deldata).then((res) => {
 						if (res != -1) {						
 							this.init()
@@ -237,7 +237,7 @@
 					return
 				}
 				let data = this.temp;
-				//data.companyTime = Date.parse(new Date(this.temp.companyTime));
+				data.companyTime = Date.parse(new Date(this.temp.companyTime));
 				if (this.dialogType == 'modify') {
 					update(data).then((res) => {
 						if (res != -1) {
