@@ -2,7 +2,7 @@
   <div>
     <el-input
         style="width: 190px;margin-right: 40px;margin-top: 20px;margin-bottom: 20px;"
-        v-model="listQuery.carNumber"
+        v-model="listQuery.employeeName"
         size="small"
         placeholder="请输入姓名"
         clearable
@@ -39,7 +39,7 @@
 
     <el-table
         v-loading="listLoading"
-        :data="employeeList.slice((this.listQuery.page-1)*this.listQuery.limit,this.listQuery.page*this.listQuery.limit)"
+        :data="employeeList"
         element-loading-text="正在疯狂加载"
         border
         fit
@@ -57,12 +57,12 @@
         </template>
       </el-table-column>
       <el-table-column
-          label="公司编号"
+          label="公司名称"
           width="155"
           align="center"
       >
         <template slot-scope="scope">
-          {{ scope.row.companyId }}
+          {{ scope.row.companyName }}
         </template>
       </el-table-column>
       <el-table-column
@@ -163,20 +163,26 @@
           label-width="150px"
           label-position="right"
       >
-        <el-form-item label="车牌号">
-          <el-input v-model="temp.carNumber" placeholder="请输入车牌号" />
+        <el-form-item label="公司编号">
+          <el-input v-model="temp.companyId" placeholder="请输入公司编号" />
         </el-form-item>
-        <el-form-item label="车型">
-          <el-input v-model="temp.carStyle" placeholder="请输入车型" />
+        <el-form-item label="姓名">
+          <el-input v-model="temp.employeeName" placeholder="请输入姓名" />
         </el-form-item>
-        <el-form-item label="车辆载重(单位:吨)">
-          <el-input v-model="temp.carLoad" placeholder="请输入车辆载重(单位:吨)" />
+        <el-form-item label="性别">
+          <el-input v-model="temp.employeeGender" placeholder="请输入性别" />
         </el-form-item>
-        <el-form-item label="车辆里程数(单位:千米)">
-          <el-input v-model="temp.carMileage" placeholder="请输入车辆里程数(单位:千米)" />
+        <el-form-item label="地址">
+          <el-input v-model="temp.employeeAddress" placeholder="请输入地址" />
         </el-form-item>
-        <el-form-item label="车辆品牌">
-          <el-input v-model="temp.carBrand" placeholder="请输入车辆品牌" />
+        <el-form-item label="手机号">
+          <el-input v-model="temp.employeeMobile" placeholder="请输入手机号" />
+        </el-form-item>
+        <el-form-item label="是否在职">
+          <el-input v-model="temp.employeeStatus" placeholder="请输入职务状态" />
+        </el-form-item>
+        <el-form-item label="身份证">
+          <el-input v-model="temp.employeeNumber" placeholder="请输入身份证号" />
         </el-form-item>
       </el-form>
       <el-button type="danger" @click="dialogVisible = false">
@@ -196,16 +202,17 @@ import Pagination from '@/components/Pagination'
 import { setStorage, getStorage} from "@/utils/localStorage.js";
 import {Message} from "element-ui";
 const _temp = {
-  // id: '',
+  companyId: "",
+  employeeAddress: "",
+  employeeDate: "",
+  employeeGender: "",
+  employeeId: "",
+  employeeMobile: "",
   employeeName: "",
-  employeeDate: "2022-06-28",
-  employeeGender: "男",
-  employeeId: 187,
-  employeeMobile: "14559168824",
-  employeeAddress: "地址581",
-  employeeStatus: "在职",
-  employeeNumber: ""
+  employeeNumber: "",
+  employeeStatus: "",
 }
+
 export default {
   components: {
     Pagination
@@ -233,14 +240,12 @@ export default {
       this.listLoading = true;
       let data = {
         employeeName: this.listQuery.employeeName,
-        // page: this.listQuery.page,
-        // limit: this.listQuery.limit
       }
-      console.log("输入的data为：\n")
-      console.log(data)
+      // console.log("输入的data为：\n")
+      // console.log(data)
       queryByPage(data).then((res)=>{
-        console.log("这是res!!")
-        console.log(res)
+        // console.log("这是res!!")
+        // console.log(res)
         if(res != -1){
           //判断查询返回的结果是否有数据
           if(res.datas.length===0){  //查询结果为空
@@ -252,14 +257,18 @@ export default {
           }
           res.datas.forEach((item, index) => {
             //通过页数计算index
-            item.index= (this.listQuery.page-1) * this.listQuery.limit+index+1;
-            this.employeeList = res.datas;
-            this.listQuery.total = res.total;
-            setTimeout(() => {
-              this.listLoading = false;
-            }, 200)
+            // item.index= (this.listQuery.page-1) * this.listQuery.limit+index+1;
+            item.index = index + 1;
           })
-
+          // console.log("hhhhhhhhh")
+          // console.log(this.listQuery)
+          // console.log(res.datas)
+          // console.log("*********")
+          this.employeeList = res.datas.slice((this.listQuery.page-1) * this.listQuery.limit,this.listQuery.page * this.listQuery.limit);
+          this.listQuery.total = res.total;
+          setTimeout(() => {
+            this.listLoading = false;
+          }, 100)
         }
 
       })
@@ -305,7 +314,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        deleteById({id:scope.row.carId}).then(()=>{
+        deleteById({id:scope.row.employeeId}).then(()=>{
           this.initEmployeeList()
           setTimeout(() => {
             this.list.splice(scope.$index, 1)  //从这个位置删除一个元素
@@ -313,7 +322,7 @@ export default {
               message: '删除成功',
               type: 'success'
             })
-          }, 300)
+          }, 100)
         })
 
       })
@@ -328,12 +337,12 @@ export default {
         // console.log("新增")
         // console.log( this.temp)
         add(this.temp)
-        this.initEmployeeList()
       }else  if(this.dialogType==="modify"){
         // console.log("修改")
         // console.log( this.temp)
+
         update(this.temp);
-        this.initEmployeeList()
+
       }
       setTimeout(() => {
         this.$message({
@@ -342,6 +351,7 @@ export default {
         })
         this.dialogVisible = false
         this.listLoading = false
+        this.initEmployeeList()
       }, 100)
     }
   },
