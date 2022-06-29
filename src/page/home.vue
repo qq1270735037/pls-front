@@ -48,7 +48,7 @@
 					</el-submenu>
           <el-submenu index="4">
             <template slot="title"><i class="el-icon-truck"></i>运输调度</template>
-            <el-menu-item index="carOperation">单车运营记录</el-menu-item>
+            <el-menu-item index="carOperation">车辆运输记录</el-menu-item>
             <el-menu-item index="carrierBusiness">承运商业务记录</el-menu-item>
           </el-submenu>
           <el-submenu index="5">

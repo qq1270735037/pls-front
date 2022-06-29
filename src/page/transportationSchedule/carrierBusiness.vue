@@ -1,5 +1,5 @@
 <template>
-  <h1>承运商业务记录</h1>
+  <h1>不写</h1>
 </template>
 
 <script>
