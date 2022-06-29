@@ -160,6 +160,7 @@
 				})
 			},
 			refresh() {
+				this.inputData="";
 				this.init()
 			},
 			resetTemp() {

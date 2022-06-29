@@ -13,8 +13,8 @@
 				新增
 			</el-button>
 		</el-button-group>
-
-		<el-table v-loading="listLoading" :data="carChangeList" element-loading-text="正在疯狂加载" border fit height="500px"
+		<el-tag type="success">tips:买卖类型（1：买入；0：卖出）</el-tag>
+		<el-table v-loading="listLoading" :data="carChangeList" element-loading-text="正在疯狂加载" border fit height="670px"
 			class="table-container" highlight-current-row>
 			<el-table-column label="序号" width="100" align="center">
 				<template slot-scope="scope">
@@ -106,7 +106,7 @@
 		insert,
 		update,
 		deleteCarChange
-	} from '@/api/getCarinfo.js';
+	} from '@/api/getCarChange.js';
 	const _temp = {
 		carChangeId: '', //交易单号
 		carId: '', //交易车辆编号
@@ -131,23 +131,21 @@
 
 		methods: {
 			init() {
-				// this.listLoading = true;
-				// getByOperation({}).then((res) => {
-				// 	if (res != -1) {
-				// 		// console.log("这是res\n");
-				// 		// console.log(res);
-				// 		res.datas.forEach((item, index) => {
-				// 			item.index = index + 1;
-				// 			//console.log(item)
-				// 		})
-				// 		this.carChangeList = res.datas;
-				// 		this.total=this.carChangeList.length;
-				// 		this.listLoading = false;
-				// 	}
+				this.listLoading = true;
+				getByOperation({}).then((res) => {
+					if (res != -1) {
+						res.datas.forEach((item, index) => {
+							item.index = index + 1;
+						})
+						this.carChangeList = res.datas;
+						this.total=this.carChangeList.length;
+						this.listLoading = false;
+					}
 
-				// })
+				})
 			},
 			refresh() {
+				this.inputData="";
 				this.init()
 			},
 			resetTemp() {
@@ -186,13 +184,9 @@
 					}, 300)
 					this.temp = deepClone(scope.row);
 					let deldata = this.temp;
-					// deldata.carChangeTime=Date.parse(new Date(this.temp.carChangeTime));
 					deleteCarChange(deldata).then((res) => {
 						if (res != -1) {
-							// this.$message({
-							// 	message: '删除成功',
-							// 	type: 'success'
-							// })
+
 							this.init()
 						}
 					})
@@ -203,7 +197,6 @@
 					return
 				}
 				let data = this.temp;
-				data.carChangeTime = Date.parse(new Date(this.temp.carChangeTime));
 				if (this.dialogType == 'modify') {
 					update(data).then((res) => {
 						if (res != -1) {
@@ -230,7 +223,7 @@
 			},
 			search() {
 				let carChange = {
-					carChangeName: this.inputData
+					operation: this.inputData
 				}
 				this.listLoading = true;
 				getByOperation(carChange).then((res) => {
@@ -238,7 +231,7 @@
 						// console.log(carChange);
 						res.datas.forEach((item, index) => {
 							item.index = index + 1;
-							console.log(item)
+							//console.log(item)
 						})
 						this.carChangeList = res.datas;
 						this.listLoading = false;
