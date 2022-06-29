@@ -1,21 +1,29 @@
 <template>
 	<div>
-		<el-input style="width: 190px;margin-right: 40px;margin-top: 20px;margin-bottom: 20px;" v-model="inputData"
-			size="small" placeholder="请输入买卖类型" clearable class="filter-item" />
+		<el-select v-model="selectValue" placeholder="请选择类型" size="small"
+			style="margin-right: 40px;margin-top: 20px;margin-bottom: 20px;" @change="search()">
+			<el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+			</el-option>
+		</el-select>
+		<!-- <el-input style="width: 190px;margin-right: 40px;margin-top: 20px;margin-bottom: 20px;" v-model="selectValue"
+			size="small" placeholder="请输入买卖类型" clearable class="filter-item" /> -->
 		<el-button-group style="margin-right: 20px;margin-top: 20px;margin-bottom: 20px;" class="filter-item">
-			<el-button size="small" type="primary" icon="el-icon-search" @click="search()">
+			<!-- <el-button size="small" type="primary" icon="el-icon-search" @click="search()">
 				搜索
-			</el-button>
+			</el-button> -->
 			<el-button size="small" type="primary" icon="el-icon-refresh" @click="refresh()">
 				刷新
 			</el-button>
 			<el-button size="small" type="primary" icon="el-icon-plus" @click="add()">
-				新增
+				买入
+			</el-button>
+			<el-button size="small" type="primary" icon="el-icon-plus" @click="add()">
+				卖出
 			</el-button>
 		</el-button-group>
 		<el-tag type="success">tips:买卖类型（1：买入；0：卖出）</el-tag>
-		<el-table v-loading="listLoading" :data="carChangeList" element-loading-text="正在疯狂加载" border fit height="670px"
-			class="table-container" highlight-current-row>
+		<el-table v-loading="listLoading" :data="carChangeList.slice((cur_page-1)*pageSize,cur_page*pageSize)"
+			element-loading-text="正在疯狂加载" border fit height="670px" class="table-container" highlight-current-row>
 			<el-table-column label="序号" width="100" align="center">
 				<template slot-scope="scope">
 					{{ scope.row.index }}
@@ -57,30 +65,23 @@
 		</el-table>
 		<!-- 分页组件ui -->
 		<div style="margin-top:20px" class="pagination">
-			<el-pagination
-			background
-			@current-change="handleCurrentChange"
-			@size-change="handleSizeChange"
-			:current-page="cur_page"
-			:page-sizes="[10,15,20,50]"
-			:page-size="pageSize"
-			layout="total, sizes, prev, pager, next, jumper"
-			:total="total"
-			></el-pagination>
+			<el-pagination background @current-change="handleCurrentChange" @size-change="handleSizeChange"
+				:current-page="cur_page" :page-sizes="[10,15,20,50]" :page-size="pageSize"
+				layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
 		</div>
 		<el-dialog :visible.sync="dialogVisible" :title="dialogType === 'modify' ? '修改' : '新增'">
 			<el-form ref="dataForm" :model="temp" label-width="150px" label-position="right">
 				<el-form-item label="交易单号">
-					<el-input v-model="temp.carChangeId" placeholder="请输入名称" />
+					<el-input v-model="temp.carChangeId" placeholder="请输入单号" :disabled="true" />
 				</el-form-item>
 				<el-form-item label="交易车辆">
-					<el-input v-model="temp.carId" placeholder="请输入时间(yyyy-MM-dd)" />
+					<el-input v-model="temp.carId" placeholder="请输入车辆编号" :disabled="true" />
 				</el-form-item>
 				<el-form-item label="车辆类型">
-					<el-input v-model="temp.carChangeType" placeholder="请输入公司所在地址" />
+					<el-input v-model="temp.carChangeType" placeholder="请输入车辆类型" />
 				</el-form-item>
 				<el-form-item label="买卖类型">
-					<el-input v-model="temp.operation" placeholder="请输入公司规模" />
+					<el-input v-model="temp.operation" placeholder="请输入买卖类型" />
 				</el-form-item>
 			</el-form>
 			<el-button type="danger" @click="dialogVisible = false">
@@ -90,7 +91,7 @@
 				确定
 			</el-button>
 		</el-dialog>
-	</div>	
+	</div>
 </template>
 
 <script>
@@ -116,6 +117,15 @@
 	export default {
 		data() {
 			return {
+				//选择框
+				selectValue: "",
+				options: [{
+					value: '1',
+					label: '买'
+				}, {
+					value: '0',
+					label: '卖'
+				}],
 				listLoading: true, //查询时加载遮罩
 				inputData: "",
 				carChangeList: [],
@@ -125,7 +135,7 @@
 				cur_page: 1,
 				pageSize: 10,
 				//数据条数
-				total :0,				
+				total: 0,
 			}
 		},
 
@@ -138,14 +148,14 @@
 							item.index = index + 1;
 						})
 						this.carChangeList = res.datas;
-						this.total=this.carChangeList.length;
+						this.total = this.carChangeList.length;
 						this.listLoading = false;
 					}
 
 				})
 			},
 			refresh() {
-				this.inputData="";
+				this.selectValue = "";
 				this.init()
 			},
 			resetTemp() {
@@ -223,7 +233,7 @@
 			},
 			search() {
 				let carChange = {
-					operation: this.inputData
+					operation: this.selectValue
 				}
 				this.listLoading = true;
 				getByOperation(carChange).then((res) => {
@@ -234,6 +244,7 @@
 							//console.log(item)
 						})
 						this.carChangeList = res.datas;
+						this.total=this.carChangeList.length;
 						this.listLoading = false;
 					}
 				})

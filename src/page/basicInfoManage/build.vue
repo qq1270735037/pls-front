@@ -142,25 +142,36 @@
 			</template>
 		  </el-table-column>
 		</el-table>
-		
+		<el-pagination
+		    style="margin-top: 10px;"
+		    @size-change="handleSizeChange"
+		    @current-change="handleCurrentChange"
+		    :current-page="listQuery.page"
+		    :page-sizes="[10, 20, 50, 100]"
+		    :page-size="200"
+		    layout="total, sizes, prev, pager, next, jumper"
+		    :total="listQuery.total">
+		</el-pagination>
 		<el-dialog
 		  :visible.sync="dialogVisible"
 		  :title="dialogType === 'modify' ? '修改' : '新增'"
 		>
 		<el-form
-			ref="dataForm"
+			ref="temp"
 			:model="temp"
 			label-width="150px"
 			label-position="right"
+			:rules="rules"
+			class="demo-ruleForm"
 		  >
 			
-			<el-form-item label="建筑名称">
+			<el-form-item label="建筑名称" prop="bulidName">
 			  <el-input v-model="temp.bulidName" placeholder="请输入建筑名称" />
 			</el-form-item>
 			<el-form-item label="建筑类型">
 			  <el-input v-model="temp.buildStyle" placeholder="请输入建筑类型" />
 			</el-form-item>
-			<el-form-item label="是否出租">
+			<el-form-item label="是否出租" prop="buildRent">
 			    <el-radio v-model="temp.buildRent" label="1">是</el-radio>
 			    <el-radio v-model="temp.buildRent" label="0">否</el-radio>
 			</el-form-item>
@@ -170,7 +181,7 @@
 			<el-form-item label="负责人">
 			  <el-input v-model="temp.buildPerson" placeholder="负责人" />
 			</el-form-item>
-			<el-form-item label="地址">
+			<el-form-item label="地址" prop="addressId">
 				 <el-select v-model="temp.addressId" placeholder="请选择" size="small">
 				    <el-option
 				      v-for="item in options"
@@ -179,13 +190,13 @@
 				      :value="item.addressId">
 				    </el-option>
 				  </el-select>
-				  <h1>{{temp.addressId}}</h1>
+				  <!-- <h1>{{temp.addressId}}</h1> -->
 			</el-form-item>
 		</el-form>
 		<el-button type="danger" @click="dialogVisible = false">
 		  取消
 		</el-button>
-		<el-button type="primary" @click="submit">
+		<el-button type="primary" @click="submit('temp')">
 		  确定
 		</el-button>
 	 </el-dialog>
@@ -220,10 +231,8 @@
 				buildlist:[],//接受的表
 				listQuery:{
 					page: 1,
-					limit: 20,
-					created_at: undefined,
-					status: undefined,
-					keyword: undefined
+					limit: 10,
+					total: 0,//总条数
 				  },
 				temp: Object.assign({}, _temp),
 				dialogVisible: false,   //弹出框显示
@@ -231,26 +240,59 @@
 				searchName:'',
 				
 				options: [],
-				        value: ''
+				        value: '',
+				rules: {
+				          addressId: [
+				                      { required: true, message: '请选择类型', trigger: 'change' }
+				                    ],
+				         
+				        
+				          bulidName: [
+				            { required: true, message: '请输入名称', trigger: 'blur' },
+				          ],
+						  buildRent:[
+				            { required: true, message: '请选择是否出租', trigger: 'blur' },
+				          ]
+				       }
 			}
 		},
 
 		methods: {
 			
-		
+			//修改每页条数的时候触发
+			handleSizeChange(value){
+			  this.listQuery.limit = value;
+			  console.log(value);
+			  //发送请求,获取数据
+			  this.initBuildlist();
+			},
+			//当页码发生改变触发
+			handleCurrentChange(value){
+			  this.listQuery.page = value;
+			  console.log(value);
+			  //发送请求,获取数据
+			  this.initBuildlist();
+			},
 			
 			//初始化表格
 			initBuildlist(){
 				this.listLoading = true;
-				getBuildAndAddress().then((res)=>{
+				let data={
+					bulidName:this.searchName,
+					page: this.listQuery.page,
+					limit: this.listQuery.limit
+				}
+				getBuildByName(data).then((res)=>{
 					
 					if(res != -1){
 							
 							res.datas.forEach((item, index) => {
-								item.index = index+1;
+							item.index= (this.listQuery.page-1) * this.listQuery.limit+index+1;
 							
 							})
 							//给列表赋值
+							this.listQuery.total = res.total;
+							this.listLoading = false;
 							this.buildlist = res.datas;
 							this.listLoading = false;
 						}
@@ -261,17 +303,22 @@
 			search(){
 				this.listLoading = true;
 				let data={
-					bulidName:this.searchName
+					bulidName:this.searchName,
+					page: this.listQuery.page,
+					limit: this.listQuery.limit
 				}
 				console.log(this.searchName);
 				getBuildByName(data).then((res)=>{
-					this.buildlist = res.datas;
+					
 					console.log(res);
 					this.listLoading = false;
 					res.datas.forEach((item, index) => {
 						item.index = index+1;
 						//console.log(item)
 					})
+					this.buildlist = res.datas;
+					this.listQuery.total = res.total;
+					this.listLoading = false;
 					console.log(res);
 					
 				});
@@ -302,7 +349,7 @@
 			    this.dialogVisible = true
 			    this.dialogType = 'create'
 			    this.$nextTick(() => {
-				this.$refs['dataForm'].clearValidate()
+				this.$refs['temp'].clearValidate()
 			  })
 			},
 			edit(scope) {
@@ -326,7 +373,7 @@
 			    this.dialogType = 'modify'
 			    this.temp = deepClone(scope.row)
 			    this.$nextTick(() => {
-				this.$refs['dataForm'].clearValidate()
+				this.$refs['temp'].clearValidate()
 			  })
 			},
 			del(scope) {
@@ -365,7 +412,17 @@
 			      })
 				  
 			    },
-			submit() {
+			submit(temp){
+				this.$refs[temp].validate((valid) => {
+				          if (valid) {
+				            this.submit1()
+				          } else {
+				            console.log('error submit!!');
+				            return false;
+				          }
+				        });
+			},	
+			submit1() {
 			  if (this.listLoading) {
 				return
 			  }

@@ -47,7 +47,7 @@
 		  highlight-current-row
 		>
 		<el-table-column
-			fixed
+			
 			label="序号"
 			width="120"
 			align="center"
@@ -56,7 +56,7 @@
 			  {{ scope.row.index }}
 			</template>
 		</el-table-column>
-		  <el-table-column
+		  <!-- <el-table-column
 			fixed
 			label="物资编号"
 			width="120"
@@ -64,17 +64,9 @@
 		  >
 			<template slot-scope="scope">
 			  {{ scope.row.materialId }}
-			</template>
+			</template> -->
 		  </el-table-column>
-		  <el-table-column
-			label="物资类型"
-			width="150	"
-			align="center"
-		  >
-			<template slot-scope="scope">
-			  {{ scope.row.materialtypeId }}
-			</template>
-		  </el-table-column>
+		 
 		  <el-table-column
 			label="名称"
 			width="150"
@@ -98,10 +90,20 @@
 			width="200"
 			align="center"
 		  >
+		
 		  
 			<template slot-scope="scope">
 			  {{ scope.row.materialUsage }}
 			</template>
+		  </el-table-column>
+		  <el-table-column
+		  			label="物资类型"
+		  			width="150	"
+		  			align="center"
+		  >
+		  			<template slot-scope="scope">
+		  			  {{ scope.row.materialtypeType }}
+		  			</template>
 		  </el-table-column>
 		  <el-table-column
 		  			label="数量"
@@ -141,38 +143,57 @@
 			</template>
 		  </el-table-column>
 		</el-table>
-		
+		<el-pagination
+		    style="margin-top: 10px;"
+		    @size-change="handleSizeChange"
+		    @current-change="handleCurrentChange"
+		    :current-page="listQuery.page"
+		    :page-sizes="[10, 20, 50, 100]"
+		    :page-size="200"
+		    layout="total, sizes, prev, pager, next, jumper"
+		    :total="listQuery.total">
+		</el-pagination>
 		<el-dialog
 		  :visible.sync="dialogVisible"
 		  :title="dialogType === 'modify' ? '修改' : '新增'"
 		>
 		<el-form
-			ref="dataForm"
+			ref="temp"
 			:model="temp"
+			:rules="rules"
 			label-width="150px"
 			label-position="right"
+			class="demo-ruleForm"
 		  >
 			
-			<el-form-item label="物资类型">
-			  <el-input v-model="temp.materialtypeId" placeholder="请输入物资类型" />
+			<el-form-item label="物资类型" prop="materialtypeId">
+			    <el-select v-model="temp.materialtypeId" placeholder="请选择" size="small">
+			       <el-option
+			         v-for="item in options"
+			         :key="item.value"
+			         :label="item.materialtypeType"
+			         :value="item.materialtypeId">
+			       </el-option>
+			     </el-select>
+				  <!-- <h1>{{temp.materialtypeId}}</h1> -->
 			</el-form-item>
-			<el-form-item label="名称">
+			<el-form-item label="名称" prop="materialName" >
 			  <el-input v-model="temp.materialName" placeholder="请输入名称" />
 			</el-form-item>
-			<el-form-item label="价格(单位:元)">
+			<el-form-item label="价格(单位:元)" prop="materialPrice" >
 			  <el-input v-model="temp.materialPrice" placeholder="请输入价格(单位:元)" />
 			</el-form-item>
-			<el-form-item label="用途">
+			<el-form-item label="用途" prop="materialUsage" >
 			  <el-input v-model="temp.materialUsage" placeholder="请输入用途" />
 			</el-form-item>
-			<el-form-item label="数量">
+			<el-form-item label="数量" prop="materialCount">
 			  <el-input v-model="temp.materialCount" placeholder="请输入数量" />
 			</el-form-item>
 		</el-form>
 		<el-button type="danger" @click="dialogVisible = false">
 		  取消
 		</el-button>
-		<el-button type="primary" @click="submit">
+		<el-button type="primary" @click="submit('temp')">
 		  确定
 		</el-button>
 	 </el-dialog>
@@ -181,7 +202,7 @@
 
 <script>
 	// import { queryByCondition } from '@/api/getCarinfo.js';
-	import { selectAll,selectByName,edit,addByName,deleteById} from '@/api/getMaterialinfo.js';
+	import { selectAll,selectByName,edit,addByName,deleteById,getMaterialAndTypeList ,selectType} from '@/api/getMaterialinfo.js';
 	import { setStorage, getStorage} from "@/utils/localStorage.js";
 	import {deepClone} from "@/utils/index.js";
 	const _temp = {
@@ -192,7 +213,7 @@
 	  materialPrice: '',
 	  materialUsage: '',
 	  materialCount: '',
-	  
+	  materialtypeType:'',
 	  
 	}
 	export default {
@@ -200,35 +221,74 @@
 			return {
 			
 				listLoading:true,//查询时加载遮罩
-				
+				options:[],
 				materiallist:[],//接受的表
+				
 				listQuery:{
 					page: 1,
-					limit: 20,
-					created_at: undefined,
-					status: undefined,
-					keyword: undefined
+					limit: 10,
+					total: 0,//总条数
 				  },
 				temp: Object.assign({}, _temp),
 				dialogVisible: false,   //弹出框显示
 				dialogType: 'create',
-				searchName:''
+				searchName:'',
+				
+				rules: {
+				          materialtypeId: [
+				                      { required: true, message: '请选择类型', trigger: 'change' }
+				                    ],
+				          materialName: [
+				            { required: true, message: '请输入名称', trigger: 'blur' },
+				            { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
+				          ],
+				          materialPrice: [
+				            { required: true, message: '请输入价格', trigger: 'blur' },
+				          ],
+				          materialUsage: [
+				            { required: true, message: '请输入用途', trigger: 'blur' },
+				          ],
+				          materialCount: [
+				            { required: true, message: '请输入数量', trigger: 'blur' },
+				          ]
+				       }
 			}
 		},
 
 		methods: {
+			//修改每页条数的时候触发
+			handleSizeChange(value){
+			  this.listQuery.limit = value;
+			  console.log(value);
+			  //发送请求,获取数据
+			  this.initMateriallist();
+			},
+			//当页码发生改变触发
+			handleCurrentChange(value){
+			  this.listQuery.page = value;
+			  console.log(value);
+			  //发送请求,获取数据
+			  this.initMateriallist();
+			},
 			initMateriallist(){
 				this.listLoading = true;
-				selectAll().then((res)=>{
+				let data = {
+				  page: this.listQuery.page,
+				  limit: this.listQuery.limit,
+				  materialName:this.searchName,
+				  }
+				selectByName(data).then((res)=>{
 					
 					if(res != -1){
 							console.log("这是res\n");
 							console.log(res);
 							res.datas.forEach((item, index) => {
-								item.index = index+1;
+								// item.index = index+1;
+								item.index= (this.listQuery.page-1) * this.listQuery.limit+index+1;
 								//console.log(item)
 							})
 							this.materiallist = res.datas;
+							this.listQuery.total = res.total;
 							this.listLoading = false;
 						}
 				})
@@ -237,15 +297,20 @@
 			search(){
 				this.listLoading = true;
 				let data={
-					materialName:this.searchName
+					materialName:this.searchName,
+					page: this.listQuery.page,
+					limit: this.listQuery.limit
 				}
 				selectByName(data).then((res)=>{
-					this.materiallist = res.datas;
+					this.listLoading = false;
 					this.listLoading = false;
 					res.datas.forEach((item, index) => {
-						item.index = index+1;
+						// item.index = index+1;
+						item.index= (this.listQuery.page-1) * this.listQuery.limit+index+1;
 						//console.log(item)
 					})
+					this.materiallist = res.datas;
+					this.listQuery.total = res.total;
 					console.log(res);
 					console.log(this.searchName);
 				});
@@ -268,23 +333,18 @@
 			  this.dialogVisible = true
 			  this.dialogType = 'create'
 			  this.$nextTick(() => {
-				this.$refs['dataForm'].clearValidate()
+				this.$refs['temp'].clearValidate()
 			  })
-			  // addByName(temp).then((res)=>{
-			  // 	console.log(res);
-			  // 	if(res.code==200){
-			  // 		this.$message({
-			  // 		  message: '提交成功',
-			  // 		  type: 'success'
-			  // 		})
-			  // 	}
-			  // 	else{
-			  // 		this.$message({
-			  // 		  message: '提交失败',
-			  // 		  type: 'success'
-			  // 		})
-			  // 	}
-			  // });
+			  selectType().then((res)=>{
+			  	
+			  	if(res != -1){
+			  			
+			  			console.log(res);
+			  			this.options = res.datas;
+			  			this.listLoading = false;
+			  		}
+			  })
+			  
 			},
 			edit(scope) {
 			  this.resetTemp()
@@ -292,7 +352,16 @@
 			  this.dialogType = 'modify'
 			  this.temp = deepClone(scope.row)
 			  this.$nextTick(() => {
-				this.$refs['dataForm'].clearValidate()
+				this.$refs['temp'].clearValidate()
+			  })
+			  selectType().then((res)=>{
+			  	
+			  	if(res != -1){
+			  			
+			  			console.log(res);
+			  			this.options = res.datas;
+			  			this.listLoading = false;
+			  		}
 			  })
 			},
 			del(scope) {
@@ -323,13 +392,24 @@
 						  }
 						  
 					  })
+					  setTimeout(() =>{
+					      this.initMateriallist()
+					  },300);
 			        },)
 			      })
-				  setTimeout(() =>{
-				      this.initMateriallist()
-				  },300);
+				  
 			    },
-			submit() {
+			submit(temp){
+				this.$refs[temp].validate((valid) => {
+				          if (valid) {
+				            this.submit1()
+				          } else {
+				            console.log('error submit!!');
+				            return false;
+				          }
+				        });
+			},
+			submit1() {
 			  if (this.listLoading) {
 				return
 			  }
