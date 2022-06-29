@@ -48,7 +48,7 @@
         highlight-current-row
     >
       <el-table-column
-          fixed
+
           label="序号"
           width="100"
           align="center"
@@ -58,7 +58,7 @@
         </template>
       </el-table-column>
       <el-table-column
-          fixed
+
           label="机电名"
           width="200"
           align="center"
@@ -235,7 +235,7 @@ export default {
             //通过页数计算index
             item.index= (this.listQuery.page-1) * this.listQuery.limit+index+1;
             //查询结果为空
-            // console.log(res.datas.length)
+            //console.log(res.total);
 
             this.machineList = res.datas;
             this.listQuery.total = res.total;
