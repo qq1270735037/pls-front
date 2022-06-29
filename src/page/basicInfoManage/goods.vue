@@ -2,7 +2,7 @@
   <div>
     <el-input
         style="width: 190px;margin-right: 40px;margin-top: 20px;margin-bottom: 20px;"
-        v-model="listQuery.merchandiseName"
+        v-model="inputData"
         size="small"
         placeholder="请输入货物名"
         clearable
@@ -11,7 +11,6 @@
     <el-button-group style="margin-right: 20px;margin-top: 20px;margin-bottom: 20px;"
                      class="filter-item">
       <el-button
-          :loading="searchloading"
           size="small"
           type="primary"
           icon="el-icon-search"
@@ -39,7 +38,7 @@
 
     <el-table
         v-loading="listLoading"
-        :data="carList"
+        :data="carList.slice((cur_page-1)*pageSize,cur_page*pageSize)"
         element-loading-text="正在疯狂加载"
         border
         fit
@@ -140,16 +139,12 @@
         </template>
       </el-table-column>
     </el-table>
-    <el-pagination
-        style="margin-top: 10px;"
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        :current-page="listQuery.page"
-        :page-sizes="[10, 20, 50, 100]"
-        :page-size="200"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="listQuery.total">
-    </el-pagination>
+    <!-- 分页组件ui -->
+    <div style="margin-top:20px" class="pagination">
+      <el-pagination background @current-change="handleCurrentChange" @size-change="handleSizeChange"
+                     :current-page="cur_page" :page-sizes="[10,15,20,50]" :page-size="pageSize"
+                     layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
+    </div>
     <el-dialog
         :visible.sync="dialogVisible"
         :title="dialogType === 'modify' ? '修改' : '新增'"
@@ -210,76 +205,30 @@ const _temp = {
 export default {
   data() {
     return {
-      searchloading:false, //搜索按钮显示加载
       listLoading:true,//查询时加载遮罩
-      carList:[],       //存储表单内容
-      listQuery:{       // 查询的数据
-        limit: 10,//每页条数
-        page: 1,//当前页码
-        total: 0,//总条数
-        merchandiseName: "" //查询的货物名
-      },
+      inputData:"",//输入的条件
+      carList:[],
       temp: Object.assign({}, _temp),
       dialogVisible: false,   //弹出框显示
       dialogType: 'create',
+      cur_page: 1,
+      pageSize: 10,
+      //数据条数
+      total: 0
     }
   },
 
   methods: {
-    //修改每页条数的时候触发
-    handleSizeChange(value){
-      this.listQuery.limit = value;
-      //发送请求,获取数据
-      this.initCarList();
-    },
-    //当页码发生改变触发
-    handleCurrentChange(value){
-      this.listQuery.page = value;
-      //发送请求,获取数据
-      this.initCarList();
-    },
     //初始化表格
     initCarList(){
       this.listLoading = true;
-      let data = {
-        merchandiseName: this.listQuery.merchandiseName,
-        // page: this.listQuery.page,
-        // limit: this.listQuery.limit
-      }
-      // console.log("输入的data为：\n")
-      // console.log(data)
-      // queryByCondition(data).then((res)=>{
-      //   if(res != -1){
-      //     //判断查询返回的结果是否有数据
-      //     if(res.datas.length===0){  //查询结果为空
-      //       this.listLoading = false;
-      //       Message({
-      //         message: "查询结果为空",
-      //         type: "error"
-      //       })
-      //     }
-      //     res.datas.forEach((item, index) => {
-      //       //通过页数计算index
-      //       item.index= (this.listQuery.page-1) * this.listQuery.limit+index+1;
-      //       this.carList = res.datas;
-      //       this.listQuery.total = res.total;
-      //       setTimeout(() => {
-      //         this.listLoading = false;
-      //       }, 200)
-      //     })
-      //
-      //   }
-      //
-      // })
-      queryByCondition(data).then((res)=>{
-
+      queryByCondition({}).then((res)=>{
         if(res != -1){
-
           res.datas.forEach((item, index) => {
             item.index = index+1;
-
           })
           this.carList = res.datas;
+          this.total = this.carList.length;
           this.listLoading = false;
         }
 
@@ -287,11 +236,20 @@ export default {
     },
     //搜索
     search(){
-      this.searchloading = true
-      this.initCarList()
-      setTimeout(() => {
-        this.searchloading = false;
-      }, 1500)
+      let merchandise = {
+        merchandiseName: this.inputData
+      }
+      this.listLoading = true;
+      queryByCondition(merchandise).then((res) => {
+        if (res != -1) {
+          res.datas.forEach((item, index) => {
+            item.index = index + 1;
+          })
+          this.carList = res.datas;
+          this.listLoading = false;
+        }
+      })
+
     },
     //刷新
     refresh() {
@@ -313,8 +271,6 @@ export default {
       this.resetTemp()
       this.dialogVisible = true
       this.dialogType = 'modify'
-      // console.log("this item is !!:\n")
-      // console.log(scope.row)
       this.temp = deepClone(scope.row)
       this.$nextTick(() => {
         this.$refs['dataForm'].clearValidate()
@@ -343,27 +299,40 @@ export default {
       if (this.listLoading) {
         return
       }
-      this.listLoading = true
-      //判断新增还是修改
-      if(this.dialogType==="create"){
-        // console.log("新增")
-        // console.log( this.temp)
-        add(this.temp)
-        this.initCarList()
-      }else  if(this.dialogType==="modify"){
-        // console.log("修改")
-        // console.log( this.temp)
-        update(this.temp);
-        this.initCarList()
-      }
-      setTimeout(() => {
-        this.$message({
-          message: '成功',
-          type: 'success'
+      let data = this.temp;
+      if (this.dialogType == 'modify') {
+        update(data).then((res) => {
+          if (res != -1) {
+            this.$message({
+              message: '修改成功',
+              type: 'success'
+            })
+            this.dialogVisible = false
+            this.initCarList()
+          }
         })
-        this.dialogVisible = false
-        this.listLoading = false
-      }, 100)
+      }
+      else{
+        add(data).then((res)=>{
+          if (res != -1) {
+            this.$message({
+              message: '添加成功',
+              type: 'success'
+            })
+            this.dialogVisible = false
+            this.initCarList()
+          }
+        })
+      }
+    },
+    // 分页导航改变页码大小在method里定义
+    handleSizeChange(val) {
+      this.pageSize = val;
+      this.cur_page = 1;
+    },
+    // 分页导航
+    handleCurrentChange(val) {
+      this.cur_page = val;
     }
   },
 
