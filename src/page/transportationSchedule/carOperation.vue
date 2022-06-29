@@ -174,7 +174,7 @@
 
         <el-form-item label="运输结束时间">
           <el-date-picker
-              v-model="temp.transportationStartTime"
+              v-model="temp.transportationEndTime"
               type="datetime"
               placeholder="选择运输结束时间">
           </el-date-picker>
