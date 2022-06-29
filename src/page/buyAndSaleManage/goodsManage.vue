@@ -386,7 +386,7 @@
 					  	else{
 					  		this.$message({
 					  		  message: '新增失败',
-					  		  type: 'success'
+					  		  type: 'error'
 					  		})
 					  	}
 					  });
