@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<el-input style="width: 190px;margin-right: 40px;margin-top: 20px;margin-bottom: 20px;" v-model="inputData"
-			size="small" placeholder="请输入公司名称" clearable class="filter-item" />
+			size="small" placeholder="请输入修理工姓名" clearable class="filter-item" />
 		<el-button-group style="margin-right: 20px;margin-top: 20px;margin-bottom: 20px;" class="filter-item">
 			<el-button size="small" type="primary" icon="el-icon-search" @click="search()">
 				搜索
@@ -14,45 +14,45 @@
 			</el-button>
 		</el-button-group>
 
-		<el-table v-loading="listLoading" :data="companyList.slice((cur_page-1)*pageSize,cur_page*pageSize)"
+		<el-table v-loading="listLoading" :data="fixList.slice((cur_page-1)*pageSize,cur_page*pageSize)"
 			element-loading-text="正在疯狂加载" border fit height="500px" class="table-container" highlight-current-row>
 			<el-table-column label="序号" width="100" align="center">
 				<template slot-scope="scope">
 					{{ scope.row.index }}
 				</template>
 			</el-table-column>
-			<el-table-column label="公司名称" width="200" align="center">
+			<el-table-column label="车辆编号" width="200" align="center">
 				<template slot-scope="scope">
-					{{ scope.row.companyName }}
+					{{ scope.row.carId }}
 				</template>
 			</el-table-column>
-			<el-table-column label="建立时间" width="180	" align="center">
+			<el-table-column label="开始时间" width="180	" align="center">
 				<template slot-scope="scope">
-					{{ scope.row.companyTime }}
+					{{ scope.row.fixStarttime }}
 				</template>
 			</el-table-column>
-			<el-table-column label="地址" width="170" align="center">
+			<el-table-column label="结束时间" width="170" align="center">
 				<template slot-scope="scope">
-					<span>{{ scope.row.companyCity }}</span>
+					<span>{{ scope.row.fixEndtime }}</span>
 				</template>
 			</el-table-column>
-			<el-table-column label="公司规模" width="150" align="center">
+			<el-table-column label="维修工姓名" width="150" align="center">
 				<template slot-scope="scope">
-					{{ scope.row.companyNumber }}
+					{{ scope.row.fixName }}
 				</template>
 			</el-table-column>
-			<el-table-column label="公司网址" width="160" align="center">
+			<el-table-column label="维修开销" width="160" align="center">
 				<template slot-scope="scope">
-					{{ scope.row.companyWebside }}
+					{{ scope.row.fixMoney }}
 				</template>
 				<!-- </el-table-column> -->
 			</el-table-column>
-			<el-table-column label="公司代码" width="100" align="center">
+			<el-table-column label="维修记录单号" width="100" align="center">
 				<template slot-scope="scope">
-					{{ scope.row.companyCode }}
+					{{ scope.row.fixId }}
 				</template>
 			</el-table-column>
-			<el-table-column label="联系人" width="200" align="center">
+			<!-- <el-table-column label="联系人" width="200" align="center">
 				<template slot-scope="scope">
 					{{ scope.row.companyPerson }}
 				</template>
@@ -61,7 +61,7 @@
 				<template slot-scope="scope">
 					{{ scope.row.companyMobile }}
 				</template>
-			</el-table-column>
+			</el-table-column> -->
 			<el-table-column fixed="right" label="操作" width="200" align="left">
 				<template slot-scope="scope">
 					<el-button-group>
@@ -84,30 +84,30 @@
 		</div>
 		<el-dialog :visible.sync="dialogVisible" :title="dialogType === 'modify' ? '修改' : '新增'">
 			<el-form ref="dataForm" :model="temp" label-width="150px" label-position="right">
-				<el-form-item label="公司名称">
-					<el-input v-model="temp.companyName" placeholder="请输入名称" />
+				<!-- <el-form-item label="维修记录单号">
+					<el-input v-model="temp.fixId" placeholder="请输入名称" :disabled="true"/>
+				</el-form-item> -->
+				<el-form-item label="车辆编号">
+					<el-input v-model="temp.carId" placeholder="请输入车辆编号" />
 				</el-form-item>
-				<el-form-item label="创建时间">
-					<el-input v-model="temp.companyTime" placeholder="请输入时间(yyyy-MM-dd)" />
+				<el-form-item label="开始时间">
+					<el-input v-model="temp.fixStarttime" placeholder="请输入时间(yyyy-MM-dd hh-mm-ss)" />
 				</el-form-item>
-				<el-form-item label="地址">
-					<el-input v-model="temp.companyCity" placeholder="请输入公司所在地址" />
+				<el-form-item label="结束时间">
+					<el-input v-model="temp.fixEndtime" placeholder="请输入时间(yyyy-MM-dd hh-mm-ss)" />
 				</el-form-item>
-				<el-form-item label="公司规模">
-					<el-input v-model="temp.companyNumber" placeholder="请输入公司规模" />
+				<el-form-item label="维修工姓名">
+					<el-input v-model="temp.fixName" placeholder="请输入维修工姓名" />
 				</el-form-item>
-				<el-form-item label="公司官网">
-					<el-input v-model="temp.companyWebside" placeholder="请输入网址" />
+				<el-form-item label="维修开销">
+					<el-input v-model="temp.fixMoney" placeholder="请输入本次维修开销" />
 				</el-form-item>
-				<el-form-item label="公司代码">
-					<el-input v-model="temp.companyCode" placeholder="请输入代码" />
-				</el-form-item>
-				<el-form-item label="联系人">
+				<!-- <el-form-item label="联系人">
 					<el-input v-model="temp.companyPerson" placeholder="请输入姓名" />
 				</el-form-item>
 				<el-form-item label="公司联系方式">
 					<el-input v-model="temp.companyMobile" placeholder="请输入电话号码" />
-				</el-form-item>
+				</el-form-item> -->
 			</el-form>
 			<el-button type="danger" @click="dialogVisible = false">
 				取消
@@ -124,8 +124,8 @@
 		queryByName,
 		update,
 		insert,
-		deleteCompany //用delete不行，应该是名称被占用了
-	} from '@/api/getCompanyinfo.js';
+		deleteFixLog //用delete不行，应该是名称被占用了
+	} from '@/api/getCarFixLog.js';
 	import {
 		setStorage,
 		getStorage
@@ -134,22 +134,19 @@
 		deepClone
 	} from "@/utils/index.js";
 	const _temp = {
-		companyId: '',
-		companyName: '',
-		companyTime: '',
-		companyCity: '',
-		companyNumber: '',
-		companyWebside: '',
-		companyCode: '',
-		companyPerson: '',
-		companyMobile: '',
+		fixId: '',
+		fixName: '',
+		fixStarttime: '',
+		fixEndtime: '',
+		fixMoney: '',
+		carId: '',
 	}
 	export default {
 		data() {
 			return {
 				listLoading: true, //查询时加载遮罩
 				inputData: "",
-				companyList: [],
+				fixList: [],
 				temp: Object.assign({}, _temp),
 				dialogVisible: false, //弹出框显示
 				dialogType: 'create',
@@ -172,8 +169,8 @@
 							item.index = index + 1;
 							//console.log(item)
 						})
-						this.companyList = res.datas;
-						this.total = this.companyList.length;
+						this.fixList = res.datas;
+						this.total = this.fixList.length;
 						this.listLoading = false;
 					}
 
@@ -218,9 +215,10 @@
 					}, 300)
 					this.temp = deepClone(scope.row);
 					let deldata = this.temp;
-					deldata.companyTime=Date.parse(new Date(this.temp.companyTime));
+					deldata.fixStarttime=Date.parse(new Date(this.temp.fixStarttime));
+					deldata.fixEndtime=Date.parse(new Date(this.temp.fixEndtime));
 					deleteCompany(deldata).then((res) => {
-						if (res != -1) {						
+						if (res != -1) {
 							this.init()
 						}
 					})
@@ -231,7 +229,8 @@
 					return
 				}
 				let data = this.temp;
-				data.companyTime = Date.parse(new Date(this.temp.companyTime));
+				data.fixStarttime=Date.parse(new Date(this.temp.fixStarttime));
+				data.fixEndtime=Date.parse(new Date(this.temp.fixEndtime));
 				if (this.dialogType == 'modify') {
 					update(data).then((res) => {
 						if (res != -1) {
@@ -268,8 +267,8 @@
 							item.index = index + 1;
 							//console.log(item)
 						})
-						this.companyList = res.datas;
-						this.total=this.companyList.length;
+						this.fixList = res.datas;
+						this.total=this.fixList.length;
 						this.listLoading = false;
 					}
 				})
@@ -278,25 +277,16 @@
 			handleSizeChange(val) {
 				this.pageSize = val;
 				this.cur_page = 1;
-				//console.log(this.companyList.slice((this.cur_page - 1) * this.pageSize, this.cur_page * this.pageSize));
 			},
 			// 分页导航
 			handleCurrentChange(val) {
-				//console.log(val);
-				this.cur_page = val;
-				//console.log(this.cur_page);
-				//console.log(this.companyList.slice((this.cur_page - 1) * this.pageSize, this.cur_page * this.pageSize));
+				this.cur_page = val;				
 			}
 		},
 
 		mounted() {
 			this.$nextTick(() => {
 				this.init();
-				// //页面初始化的时候执行
-				// this.initDocList();
-				// //this.testMap();
-				// //初始化获取类型数据
-				// this.initCategoryList();
 			})
 		},
 
