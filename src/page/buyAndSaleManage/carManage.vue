@@ -23,7 +23,7 @@
 		</el-button-group>
 		<el-tag type="success">tips:买卖类型（1：买入；0：卖出）</el-tag>
 		<el-table v-loading="listLoading" :data="carChangeList.slice((cur_page-1)*pageSize,cur_page*pageSize)"
-			element-loading-text="正在疯狂加载" border fit height="670px" class="table-container" highlight-current-row>
+			element-loading-text="正在疯狂加载" border fit height="500px" class="table-container" highlight-current-row>
 			<el-table-column label="序号" width="100" align="center">
 				<template slot-scope="scope">
 					{{ scope.row.index }}
@@ -41,7 +41,7 @@
 			</el-table-column>
 			<el-table-column label="买卖类型" width="170" align="center">
 				<template slot-scope="scope">
-					<span>{{ scope.row.operation }}</span>
+					<span>{{  parseInt(scope.row.operation) === 1 ? '买入' : '卖出' }}</span>
 				</template>
 			</el-table-column>
 			<el-table-column label="交易单号" width="170" align="center">
