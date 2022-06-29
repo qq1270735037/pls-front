@@ -165,10 +165,19 @@
           <el-input v-model="temp.carId" placeholder="请输入车辆序号" />
         </el-form-item>
         <el-form-item label="运输开始时间">
-          <el-input v-model="temp.transportationStartTime" placeholder="请输入运输开始时间" />
+          <el-date-picker
+              v-model="temp.transportationStartTime"
+              type="datetime"
+              placeholder="选择运输开始时间">
+          </el-date-picker>
         </el-form-item>
+
         <el-form-item label="运输结束时间">
-          <el-input v-model="temp.transportationEndTime" placeholder="请输入运输结束时间" />
+          <el-date-picker
+              v-model="temp.transportationStartTime"
+              type="datetime"
+              placeholder="选择运输结束时间">
+          </el-date-picker>
         </el-form-item>
         <el-form-item label="运输起点">
           <el-input v-model="temp.transportationStartLocation" placeholder="请输入运输起点" />
