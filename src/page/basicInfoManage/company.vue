@@ -88,7 +88,12 @@
 					<el-input v-model="temp.companyName" placeholder="请输入名称" />
 				</el-form-item>
 				<el-form-item label="创建时间">
-					<el-input v-model="temp.companyTime" placeholder="请输入时间(yyyy-MM-dd)" />
+					<!-- <el-input v-model="temp.companyTime" placeholder="请输入时间(yyyy-MM-dd)" /> -->
+					 <el-date-picker
+					      v-model="temp.companyTime"
+					      type="datetime"
+					      placeholder="选择日期时间">
+					    </el-date-picker>
 				</el-form-item>
 				<el-form-item label="地址">
 					<el-input v-model="temp.companyCity" placeholder="请输入公司所在地址" />
@@ -219,7 +224,7 @@
 					}, 300)
 					this.temp = deepClone(scope.row);
 					let deldata = this.temp;
-					deldata.companyTime=Date.parse(new Date(this.temp.companyTime));
+					//deldata.companyTime=Date.parse(new Date(this.temp.companyTime));
 					deleteCompany(deldata).then((res) => {
 						if (res != -1) {						
 							this.init()
@@ -232,7 +237,7 @@
 					return
 				}
 				let data = this.temp;
-				data.companyTime = Date.parse(new Date(this.temp.companyTime));
+				//data.companyTime = Date.parse(new Date(this.temp.companyTime));
 				if (this.dialogType == 'modify') {
 					update(data).then((res) => {
 						if (res != -1) {
@@ -271,6 +276,7 @@
 						})
 						this.companyList = res.datas;
 						this.total=this.companyList.length;
+						this.cur_page=1;
 						this.listLoading = false;
 					}
 				})

@@ -80,10 +80,20 @@
 					<el-input v-model="temp.carId" placeholder="请输入车辆编号" />
 				</el-form-item>
 				<el-form-item label="开始时间">
-					<el-input v-model="temp.fixStarttime" placeholder="请输入时间(yyyy-MM-dd hh-mm-ss)" />
+					<!-- <el-input v-model="temp.fixStarttime" placeholder="请输入时间(yyyy-MM-dd hh-mm-ss)" /> -->
+					 <el-date-picker
+					      v-model="temp.fixStarttime"
+					      type="datetime"
+					      placeholder="选择日期时间">
+					    </el-date-picker>
 				</el-form-item>
 				<el-form-item label="结束时间">
-					<el-input v-model="temp.fixEndtime" placeholder="请输入时间(yyyy-MM-dd hh-mm-ss)" />
+					<!-- <el-input v-model="temp.fixEndtime" placeholder="请输入时间(yyyy-MM-dd hh-mm-ss)" /> -->
+					 <el-date-picker
+					      v-model="temp.fixEndtime"
+					      type="datetime"
+					      placeholder="选择日期时间">
+					    </el-date-picker>
 				</el-form-item>
 				<el-form-item label="维修工姓名">
 					<el-input v-model="temp.fixName" placeholder="请输入维修工姓名" />
@@ -253,6 +263,7 @@
 						})
 						this.fixList = res.datas;
 						this.total=this.fixList.length;
+						this.cur_page=1;
 						this.listLoading = false;
 					}
 				})
