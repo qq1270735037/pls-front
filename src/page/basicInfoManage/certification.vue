@@ -38,9 +38,9 @@
 	        </el-button>
 	      </el-button-group>
 		  
-	<el-table
+	<el-table 
 		  v-loading="listLoading"
-		  :data="materiallist"
+		  :data="materiallist.slice((cur_page-1)*pageSize,cur_page*pageSize)" 
 		  element-loading-text="正在疯狂加载"
 		  border
 		  fit
@@ -144,6 +144,12 @@
 		  </el-table-column>
 		</el-table>
 		
+		<!-- 分页组件 -->
+	
+		<el-pagination background @current-change="handleCurrentChange" @size-change="handleSizeChange"
+			:current-page="cur_page" :page-sizes="[10,15,20,50]" :page-size="pageSize"
+			layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
+
 		<el-dialog
 		  :visible.sync="dialogVisible"
 		  :title="dialogType === 'modify' ? '修改' : '新增'"
@@ -207,6 +213,8 @@
 			return {
 			
 				listLoading:true,//查询时加载遮罩
+				cur_page:1,
+				pageSize:10,
 				
 				materiallist:[],//接受的表
 				listQuery:{
@@ -224,6 +232,19 @@
 		},
 
 		methods: {
+			//返回当前页码
+			handleCurrentChange(val) {
+				//console.log(val);
+				this.cur_page = val;
+				//console.log(this.cur_page);
+				//console.log(this.companyList.slice((this.cur_page - 1) * this.pageSize, this.cur_page * this.pageSize));
+			},
+			// 分页导航改变页码大小在method里定义
+			handleSizeChange(val) {
+				this.pageSize = val;
+				this.cur_page = 1;
+				//console.log(this.companyList.slice((this.cur_page - 1) * this.pageSize, this.cur_page * this.pageSize));
+			},
 			initMateriallist(){
 				this.listLoading = true;
 				selectAll().then((res)=>{

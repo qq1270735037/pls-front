@@ -46,6 +46,17 @@
 						<el-menu-item index="carFixLog">车辆维修记录</el-menu-item>
 						<el-menu-item index="materialUseLog">维修物资使用记录</el-menu-item>
 					</el-submenu>
+          <el-submenu index="4">
+            <template slot="title"><i class="el-icon-truck"></i>运输调度</template>
+            <el-menu-item index="carOperation">车辆运输记录</el-menu-item>
+            <el-menu-item index="carrierBusiness">承运商业务记录</el-menu-item>
+          </el-submenu>
+          <el-submenu index="5">
+            <template slot="title"><i class="el-icon-view"></i>对外合作</template>
+            <el-menu-item index="communication">信息交流</el-menu-item>
+            <el-menu-item index="advertisement">广告信息交流</el-menu-item>
+          </el-submenu>
+
 				</el-menu>
 			</el-aside>
 

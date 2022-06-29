@@ -1,10 +1,11 @@
 <template>
+
   <div>
     <el-input
         style="width: 190px;margin-right: 40px;margin-top: 20px;margin-bottom: 20px;"
         v-model="inputData"
         size="small"
-        placeholder="请输入货物名"
+        placeholder="请输入money"
         clearable
         class="filter-item"
     />
@@ -14,7 +15,7 @@
           size="small"
           type="primary"
           icon="el-icon-search"
-          @click="search"
+          @click="search()"
       >
         搜索
       </el-button>
@@ -30,7 +31,7 @@
           size="small"
           type="primary"
           icon="el-icon-plus"
-          @click="insert"
+          @click="add"
       >
         新增
       </el-button>
@@ -38,18 +39,19 @@
 
     <el-table
         v-loading="listLoading"
-        :data="carList.slice((cur_page-1)*pageSize,cur_page*pageSize)"
+        :data="transportationList.slice((cur_page-1)*pageSize,cur_page*pageSize)"
         element-loading-text="正在疯狂加载"
         border
         fit
         height="500px"
         class="table-container"
         highlight-current-row
+        style="width: 100%;"
     >
       <el-table-column
           fixed
           label="序号"
-          width="100"
+          width="200"
           align="center"
       >
         <template slot-scope="scope">
@@ -58,64 +60,68 @@
       </el-table-column>
       <el-table-column
           fixed
-          label="货物名"
+          label="车辆序号"
           width="200"
           align="center"
       >
         <template slot-scope="scope">
-          {{ scope.row.merchandiseName }}
+          {{ scope.row.carId }}
         </template>
       </el-table-column>
       <el-table-column
-          label="货物类型"
-          width="180	"
-          align="center"
-      >
-        <template slot-scope="scope">
-          {{ scope.row.merchandiseType }}
-        </template>
-      </el-table-column>
-      <el-table-column
-          label="货物数量（单位:个）"
-          width="170"
-          align="center"
-      >
-        <template slot-scope="scope">
-          <span>{{ scope.row.repositoryCount }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column
-          label="货物重量(单位:千克)"
+          label="运输开始时间"
           width="200"
           align="center"
       >
         <template slot-scope="scope">
-          {{ scope.row.merchandiseHeight }}
+          {{ scope.row.transportationStartTime }}
         </template>
+
       </el-table-column>
       <el-table-column
-          label="货物尺寸"
-          width="160"
+          label="运输结束时间"
+          width="200"
           align="center"
       >
         <template slot-scope="scope">
-          {{ scope.row.merchandiseSize }}
+          <span>{{ scope.row.transportationEndTime }}</span>
         </template>
       </el-table-column>
       <el-table-column
-          label="供货商"
-          width="160"
+          label="运输起点"
+          width="200"
           align="center"
       >
         <template slot-scope="scope">
-          {{ scope.row.merchandiseSupplier }}
+          <span>{{ scope.row.transportationStartLocation }}</span>
         </template>
       </el-table-column>
+      <el-table-column
+          label="运输终点"
+          width="200"
+          align="center"
+      >
+        <template slot-scope="scope">
+          <span>{{ scope.row.transportationEndLocation }}</span>
+        </template>
+      </el-table-column>
+        <el-table-column
+            label="运输利润"
+            width="200"
+            align="center"
+        >
+          <template slot-scope="scope">
+            <span>{{ scope.row.transportationMoney }}</span>
+          </template>
+
+      </el-table-column>
+
+
       <el-table-column
           fixed="right"
           label="操作"
-          width="200"
-          align="left"
+          width="250"
+          align="center"
       >
         <template slot-scope="scope">
           <el-button-group>
@@ -155,23 +161,23 @@
           label-width="150px"
           label-position="right"
       >
-        <el-form-item label="货物名">
-          <el-input v-model="temp.merchandiseName" placeholder="请输入货物名" />
+        <el-form-item label="车辆序号">
+          <el-input v-model="temp.carId" placeholder="请输入车辆序号" />
         </el-form-item>
-        <el-form-item label="货物类型">
-          <el-input v-model="temp.merchandiseType" placeholder="请输入货物类型" />
+        <el-form-item label="运输开始时间">
+          <el-input v-model="temp.transportationStartTime" placeholder="请输入运输开始时间" />
         </el-form-item>
-        <el-form-item label="货物数量（单位:个）">
-          <el-input v-model="temp.repositoryCount" placeholder="请输入货物数量（单位:个）" />
+        <el-form-item label="运输结束时间">
+          <el-input v-model="temp.transportationEndTime" placeholder="请输入运输结束时间" />
         </el-form-item>
-        <el-form-item label="货物重量(单位:千克)">
-          <el-input v-model="temp.merchandiseHeight" placeholder="请输入货物重量(单位:千克)" />
+        <el-form-item label="运输起点">
+          <el-input v-model="temp.transportationStartLocation" placeholder="请输入运输起点" />
         </el-form-item>
-        <el-form-item label="货物尺寸（单位:米）">
-          <el-input v-model="temp.merchandiseSize" placeholder="请输入货物尺寸（单位:米）" />
+        <el-form-item label="运输终点">
+          <el-input v-model="temp.transportationEndLocation" placeholder="请输入运输终点" />
         </el-form-item>
-        <el-form-item label="供货商">
-          <el-input v-model="temp.merchandiseSupplier" placeholder="请输入供货商" />
+        <el-form-item label="运输利润">
+          <el-input v-model="temp.transportationMoney" placeholder="请输入运输利润" />
         </el-form-item>
       </el-form>
       <el-button type="danger" @click="dialogVisible = false">
@@ -180,86 +186,80 @@
       <el-button type="primary" @click="submit">
         确定
       </el-button>
+
+
     </el-dialog>
+
   </div>
 </template>
 
 <script>
-import { queryByCondition,add,update,deleteById} from '@/api/getMerchandiseinfo.js';
-import { deepClone } from '@/utils/index.js';
+import { queryByCondition,addTransportation,updateTransportation,deleteTransportation } from '@/api/getTransportationInfo.js';
 import { setStorage, getStorage} from "@/utils/localStorage.js";
+import {deepClone} from "@/utils/index.js";
 import {Message} from "element-ui";
-const _temp = {
-  // id: '',
-  merchandiseId: '',
-  buildId: '',
-  purchasesaleId: '',
-  merchandiseName: '',
-  merchandiseType: '',
-  repositoryCount : '',
-  merchandiseHeight : '',
-  merchandiseSize:'',
-  merchandiseSupplier:'',
-  merchandiseCount:'',
-}
-export default {
-  data() {
-    return {
-      listLoading:true,//查询时加载遮罩
-      inputData:"",//输入的条件
-      carList:[],
-      temp: Object.assign({}, _temp),
-      dialogVisible: false,   //弹出框显示
-      dialogType: 'create',
-      cur_page: 1,
-      pageSize: 10,
-      //数据条数
-      total: 0
-    }
-  },
+  const _temp = {
+    carId:'',
+    transportationStartTime:'',
+    transportationEndTime:'',
+    transportationStartLocation:'',
+    transportationEndLocation:'',
+    transportationMoney:'',
+  }
+  export default {
+    data() {
+      return {
+        listLoading:true,//查询时加载遮罩
+        inputData:"",//输入的条件
+        transportationList:[],
+        temp: Object.assign({}, _temp),
+        dialogVisible: false,   //弹出框显示
+        dialogType: 'create',
+        cur_page: 1,
+        pageSize: 10,
+        //数据条数
+        total: 0
+      }
+    },
 
   methods: {
-    //初始化表格
-    initCarList(){
+    initTransportationList(){
       this.listLoading = true;
       queryByCondition({}).then((res)=>{
         if(res != -1){
           res.datas.forEach((item, index) => {
             item.index = index+1;
           })
-          this.carList = res.datas;
-          this.total = this.carList.length;
+          this.transportationList = res.datas;
+          this.total = this.transportationList.length;
           this.listLoading = false;
         }
 
       })
     },
     //搜索
-    search(){
-      let merchandise = {
-        merchandiseName: this.inputData
+    search() {
+      let transportation = {
+        transportationMoney: this.inputData
       }
       this.listLoading = true;
-      queryByCondition(merchandise).then((res) => {
+      queryByCondition(transportation).then((res) => {
         if (res != -1) {
           res.datas.forEach((item, index) => {
             item.index = index + 1;
           })
-          this.carList = res.datas;
+          this.transportationList = res.datas;
           this.listLoading = false;
         }
       })
-
     },
-    //刷新
     refresh() {
-      this.listQuery.page=1;
-      this.initCarList()
+      this.initTransportationList()
     },
     resetTemp() {
       this.temp = Object.assign({}, _temp)
     },
-    insert() {
+    add() {
       this.resetTemp()
       this.dialogVisible = true
       this.dialogType = 'create'
@@ -282,10 +282,9 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        deleteById({id:scope.row.merchandiseId}).then(()=>{
-          this.initCarList()
+        deleteTransportation({id:scope.row.transportationId}).then(()=>{
+          this.initTransportationList()
           setTimeout(() => {
-            this.list.splice(scope.$index, 1)  //从这个位置删除一个元素
             this.$message({
               message: '删除成功',
               type: 'success'
@@ -301,30 +300,31 @@ export default {
       }
       let data = this.temp;
       if (this.dialogType == 'modify') {
-        update(data).then((res) => {
+        updateTransportation(data).then((res) => {
           if (res != -1) {
             this.$message({
               message: '修改成功',
               type: 'success'
             })
             this.dialogVisible = false
-            this.initCarList()
+            this.initTransportationList()
           }
         })
       }
       else{
-        add(data).then((res)=>{
+        addTransportation(data).then((res)=>{
           if (res != -1) {
             this.$message({
               message: '添加成功',
               type: 'success'
             })
             this.dialogVisible = false
-            this.initCarList()
+            this.initTransportationList()
           }
         })
       }
     },
+
     // 分页导航改变页码大小在method里定义
     handleSizeChange(val) {
       this.pageSize = val;
@@ -334,11 +334,12 @@ export default {
     handleCurrentChange(val) {
       this.cur_page = val;
     }
+
   },
 
   mounted() {
     this.$nextTick(() => {
-      this.initCarList();
+      this.initTransportationList();
     })
   },
 

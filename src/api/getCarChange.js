@@ -1,30 +1,30 @@
 import request from '../utils/request.js'
 
 	
-export function queryByName(data){
+export function getByOperation(data){
 	return request({
-		url: '/fixinfo/getByRepairmanName',//请求接口
+		url: '/carchange/getByOperation',//请求接口
 		method: 'post',//请求方式
 		data
 	})
 }
 export function update(data){
 	return request({
-		url: '/fixinfo/updateFixLog',//请求接口
+		url: '/carchange/updateCarChange',//请求接口
 		method: 'post',//请求方式
 		data
 	})
 }
 export function insert(data){
 	return request({
-		url: '/fixinfo/insertFixLog',//请求接口
+		url: '/carchange/insertCarChange',//请求接口
 		method: 'post',//请求方式
 		data
 	})
 }
-export function deleteFixLog(data){
+export function deleteCarChange(data){
 	return request({
-		url: '/fixinfo/deleteFixLog',//请求接口
+		url: '/carchange/deleteCarChange',//请求接口
 		method: 'post',//请求方式
 		data
 	})

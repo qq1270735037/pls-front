@@ -243,13 +243,12 @@
 						res.datas.forEach((item, index) => {
               //通过页数计算index
               item.index= (this.listQuery.page-1) * this.listQuery.limit+index+1;
-              this.carList = res.datas;
-              this.listQuery.total = res.total;
-              setTimeout(() => {
-                this.listLoading = false;
-              }, 200)
 						})
-
+            this.carList = res.datas;
+            this.listQuery.total = res.total;
+            setTimeout(() => {
+              this.listLoading = false;
+            }, 200)
 					}
 
 				})

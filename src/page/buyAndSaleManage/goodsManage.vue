@@ -39,7 +39,7 @@
 		  
 	<el-table
 		  v-loading="listLoading"
-		  :data="materiallist"
+		  :data="materiallist.slice((cur_page-1)*pageSize,cur_page*pageSize)" 
 		  element-loading-text="正在疯狂加载"
 		  border
 		  fit
@@ -119,6 +119,11 @@
 			</template>
 		  </el-table-column>
 		</el-table>
+		<el-pagination background @current-change="handleCurrentChange" @size-change="handleSizeChange"
+			:current-page="cur_page" :page-sizes="[10,15,20,50]" :page-size="pageSize"
+			layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
+		
+		<el-dialog
 		
 		<el-dialog
 		  :visible.sync="dialogVisible"
@@ -132,13 +137,13 @@
 		  >
 			<!-- 需更改 -->
 			<el-form-item label="货物类型">
-			  <el-input v-model="temp.purchasesaleType" placeholder="请输入物资类型" />
+			  <el-input v-model="temp.purchasesaleType" placeholder="请输入货物类型" />
 			</el-form-item>
 			<el-form-item label="货物价格(单位:元)">
-			  <el-input v-model="temp.purchasesalePrice" placeholder="请输入名称" />
+			  <el-input v-model="temp.purchasesalePrice" placeholder="请输入货物价格" />
 			</el-form-item>
 			<el-form-item label="货物数量">
-			  <el-input v-model="temp.purchasesaleCount" placeholder="请输入价格(单位:元)" />
+			  <el-input v-model="temp.purchasesaleCount" placeholder="请输入货物数量" />
 			</el-form-item>
 			
 		</el-form>
@@ -172,6 +177,8 @@
 	export default {
 		data() {
 			return {
+				cur_page:1,
+				pageSize:10,
 			
 				listLoading:true,//查询时加载遮罩
 				
@@ -191,6 +198,19 @@
 		},
 
 		methods: {
+			//返回当前页码
+			handleCurrentChange(val) {
+				//console.log(val);
+				this.cur_page = val;
+				//console.log(this.cur_page);
+				//console.log(this.companyList.slice((this.cur_page - 1) * this.pageSize, this.cur_page * this.pageSize));
+			},
+			// 分页导航改变页码大小在method里定义
+			handleSizeChange(val) {
+				this.pageSize = val;
+				this.cur_page = 1;
+				//console.log(this.companyList.slice((this.cur_page - 1) * this.pageSize, this.cur_page * this.pageSize));
+			},
 			initMateriallist(){
 				this.listLoading = true;
 				selectAll().then((res)=>{

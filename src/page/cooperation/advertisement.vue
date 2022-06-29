@@ -1,9 +1,11 @@
 <template>
-	<h1>不写</h1>
+ <h1>广告信息交流</h1>
 </template>
 
 <script>
+
 </script>
 
-<style>
+<style scoped>
+
 </style>
