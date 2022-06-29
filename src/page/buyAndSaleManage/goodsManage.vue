@@ -338,7 +338,7 @@
 						  else{
 						  	this.$message({
 						  	  message: '删除失败',
-						  	  type: 'success'
+						  	  type: 'error'
 						  	})
 						  }
 						  
@@ -369,7 +369,7 @@
 					  	else{
 					  		this.$message({
 					  		  message: '提交失败',
-					  		  type: 'success'
+					  		  type: 'error'
 					  		})
 					  	}
 					  });
