@@ -160,7 +160,6 @@
 <script>
 	import { queryByCondition,addAddress,update,deleteAddress } from '@/api/getAddressInfo.js';
 	import { setStorage, getStorage} from "@/utils/localStorage.js";
-  import Pagination from '@/components/Pagination';
   import {deepClone} from "@/utils/index.js";
   import {Message} from "element-ui";
 	const _temp = {
@@ -169,12 +168,8 @@
 	  addressName: '',
 	}
 	export default {
-    components: {
-      Pagination
-    },
 		data() {
 			return {
-
 				listLoading:true,//查询时加载遮罩
         inputData:"",//输入的条件
 				addressList:[],
