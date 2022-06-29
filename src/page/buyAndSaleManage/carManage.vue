@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<el-input style="width: 190px;margin-right: 40px;margin-top: 20px;margin-bottom: 20px;" v-model="inputData"
-			size="small" placeholder="请输入公司名称" clearable class="filter-item" />
+			size="small" placeholder="请输入买卖类型" clearable class="filter-item" />
 		<el-button-group style="margin-right: 20px;margin-top: 20px;margin-bottom: 20px;" class="filter-item">
 			<el-button size="small" type="primary" icon="el-icon-search" @click="search()">
 				搜索
@@ -13,8 +13,8 @@
 				新增
 			</el-button>
 		</el-button-group>
-
-		<el-table v-loading="listLoading" :data="carChangeList" element-loading-text="正在疯狂加载" border fit height="500px"
+		<el-tag type="success">tips:买卖类型（1：买入；0：卖出）</el-tag>
+		<el-table v-loading="listLoading" :data="carChangeList" element-loading-text="正在疯狂加载" border fit height="670px"
 			class="table-container" highlight-current-row>
 			<el-table-column label="序号" width="100" align="center">
 				<template slot-scope="scope">
@@ -41,7 +41,7 @@
 					<span>{{ scope.row.carChangeId }}</span>
 				</template>
 			</el-table-column>
-			<!-- <el-table-column fixed="right" label="操作" width="200" align="left">
+			<el-table-column fixed="right" label="操作" width="200" align="left">
 				<template slot-scope="scope">
 					<el-button-group>
 						<el-button type="primary" icon="el-icon-edit" size="mini" @click="edit(scope)">
@@ -52,11 +52,11 @@
 						</el-button>
 					</el-button-group>
 				</template>
-			</el-table-column> -->
+			</el-table-column>
 
 		</el-table>
 		<!-- 分页组件ui -->
-		<!-- <div style="margin-top:20px" class="pagination">
+		<div style="margin-top:20px" class="pagination">
 			<el-pagination
 			background
 			@current-change="handleCurrentChange"
@@ -67,8 +67,8 @@
 			layout="total, sizes, prev, pager, next, jumper"
 			:total="total"
 			></el-pagination>
-		</div> -->
-		<!-- <el-dialog :visible.sync="dialogVisible" :title="dialogType === 'modify' ? '修改' : '新增'">
+		</div>
+		<el-dialog :visible.sync="dialogVisible" :title="dialogType === 'modify' ? '修改' : '新增'">
 			<el-form ref="dataForm" :model="temp" label-width="150px" label-position="right">
 				<el-form-item label="交易单号">
 					<el-input v-model="temp.carChangeId" placeholder="请输入名称" />
@@ -89,58 +89,8 @@
 			<el-button type="primary" @click="submit()">
 				确定
 			</el-button>
-		</el-dialog> -->
-		<el-table v-loading="listLoading" :data="carList" element-loading-text="正在疯狂加载" border fit height="500px"
-			class="table-container" highlight-current-row>
-			<el-table-column fixed label="序号" width="100" align="center">
-				<template slot-scope="scope">
-					{{ scope.row.index }}
-				</template>
-			</el-table-column>
-			<el-table-column fixed label="车牌号" width="200" align="center">
-				<template slot-scope="scope">
-					{{ scope.row.carNumber }}
-				</template>
-			</el-table-column>
-			<el-table-column label="车型" width="180	" align="center">
-				<template slot-scope="scope">
-					{{ scope.row.carStyle }}
-				</template>
-			</el-table-column>
-			<el-table-column label="车辆载重(单位:吨)" width="170" align="center">
-				<template slot-scope="scope">
-					<span>{{ scope.row.carLoad }}</span>
-				</template>
-			</el-table-column>
-			<el-table-column label="车辆里程数(单位:千米)" width="200" align="center">
-				<template slot-scope="scope">
-					{{ scope.row.carMileage }}
-				</template>
-			</el-table-column>
-			<el-table-column label="车辆品牌" width="160" align="center">
-				<template slot-scope="scope">
-				 {{ scope.row.carBrand }}
-				</template>
-			</el-table-column>
-			<el-table-column fixed="right" label="操作" width="200" align="left">
-				<template slot-scope="scope">
-					<el-button-group>
-						<el-button type="primary" icon="el-icon-edit" size="mini" @click="edit(scope)">
-							修改
-						</el-button>
-						<el-button type="danger" icon="el-icon-delete" size="mini" @click="del(scope)">
-							删除
-						</el-button>
-					</el-button-group>
-				</template>
-			</el-table-column>
-		</el-table>
-		<el-pagination style="margin-top: 10px;" @size-change="handleSizeChange" @current-change="handleCurrentChange"
-			:current-page="listQuery.page" :page-sizes="[10, 20, 50, 100]" :page-size="200"
-			layout="total, sizes, prev, pager, next, jumper" :total="listQuery.total">
-		</el-pagination>
-	</div>
-
+		</el-dialog>
+	</div>	
 </template>
 
 <script>
@@ -152,11 +102,11 @@
 		deepClone
 	} from "@/utils/index.js";
 	import {
-		queryByPage,
-		add,
+		getByOperation,
+		insert,
 		update,
-		deleteById
-	} from '@/api/getCarinfo.js';
+		deleteCarChange
+	} from '@/api/getCarChange.js';
 	const _temp = {
 		carChangeId: '', //交易单号
 		carId: '', //交易车辆编号
@@ -172,39 +122,30 @@
 				temp: Object.assign({}, _temp),
 				dialogVisible: false, //弹出框显示
 				dialogType: 'create',
-				// cur_page: 1,
-				// pageSize: 10,
-				// //数据条数
-				// total :0,
-				listQuery: { // 查询的数据
-					limit: 10, //每页条数
-					page: 1, //当前页码
-					total: 0, //总条数
-					// carNumber: "" //查询的车牌号
-				},
-				carList:[],
+				cur_page: 1,
+				pageSize: 10,
+				//数据条数
+				total :0,				
 			}
 		},
 
 		methods: {
 			init() {
-				// this.listLoading = true;
-				// queryByName({}).then((res) => {
-				// 	if (res != -1) {
-				// 		// console.log("这是res\n");
-				// 		// console.log(res);
-				// 		res.datas.forEach((item, index) => {
-				// 			item.index = index + 1;
-				// 			//console.log(item)
-				// 		})
-				// 		this.companyList = res.datas;
-				// 		this.total=this.companyList.length;
-				// 		this.listLoading = false;
-				// 	}
+				this.listLoading = true;
+				getByOperation({}).then((res) => {
+					if (res != -1) {
+						res.datas.forEach((item, index) => {
+							item.index = index + 1;
+						})
+						this.carChangeList = res.datas;
+						this.total=this.carChangeList.length;
+						this.listLoading = false;
+					}
 
-				// })
+				})
 			},
 			refresh() {
+				this.inputData="";
 				this.init()
 			},
 			resetTemp() {
@@ -243,13 +184,9 @@
 					}, 300)
 					this.temp = deepClone(scope.row);
 					let deldata = this.temp;
-					// deldata.companyTime=Date.parse(new Date(this.temp.companyTime));
-					deleteCompany(deldata).then((res) => {
+					deleteCarChange(deldata).then((res) => {
 						if (res != -1) {
-							// this.$message({
-							// 	message: '删除成功',
-							// 	type: 'success'
-							// })
+
 							this.init()
 						}
 					})
@@ -260,7 +197,6 @@
 					return
 				}
 				let data = this.temp;
-				data.companyTime = Date.parse(new Date(this.temp.companyTime));
 				if (this.dialogType == 'modify') {
 					update(data).then((res) => {
 						if (res != -1) {
@@ -286,18 +222,18 @@
 				}
 			},
 			search() {
-				let company = {
-					companyName: this.inputData
+				let carChange = {
+					operation: this.inputData
 				}
 				this.listLoading = true;
-				queryByName(company).then((res) => {
+				getByOperation(carChange).then((res) => {
 					if (res != -1) {
-						// console.log(company);
+						// console.log(carChange);
 						res.datas.forEach((item, index) => {
 							item.index = index + 1;
-							console.log(item)
+							//console.log(item)
 						})
-						this.companyList = res.datas;
+						this.carChangeList = res.datas;
 						this.listLoading = false;
 					}
 				})
@@ -306,7 +242,7 @@
 			handleSizeChange(val) {
 				this.pageSize = val;
 				this.cur_page = 1;
-				// console.log(this.companyList.slice((this.cur_page-1)*this.pageSize,this.cur_page*this.pageSize));
+				// console.log(this.carChangeList.slice((this.cur_page-1)*this.pageSize,this.cur_page*this.pageSize));
 			},
 			// 分页导航
 			handleCurrentChange(val) {
