@@ -49,9 +49,9 @@
 			  style="width: 100%;"
 			>
 			<el-table-column
-				fixed
+				
 				label="序号"
-				width="350"
+				width="250"
 				align="center"
 			>
 				<template slot-scope="scope">
@@ -59,9 +59,9 @@
 				</template>
 			</el-table-column>
 			  <el-table-column
-				fixed
+				
 				label="省份"
-				width="350"
+				width="250"
 				align="center"
 			  >
 				<template slot-scope="scope">
@@ -70,7 +70,7 @@
 			  </el-table-column>
 			  <el-table-column
 				label="城市"
-				width="350"
+				width="250"
 				align="center"
 			  >
 				<template slot-scope="scope">
@@ -80,7 +80,7 @@
 			  </el-table-column>
 			  <el-table-column
 				label="地区"
-				width="350"
+				width="250"
 				align="center"
 			  >
 				<template slot-scope="scope">
@@ -211,6 +211,8 @@
               item.index = index + 1;
             })
             this.addressList = res.datas;
+			this.total=this.addressList.length;
+			this.cur_page=1;
             this.listLoading = false;
           }
         })
