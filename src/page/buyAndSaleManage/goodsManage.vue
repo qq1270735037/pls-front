@@ -59,9 +59,19 @@
 		</el-table-column>
 		
 		<!-- 需更改 -->
+		<el-table-column
+					fixed
+					label="货物名"
+					width="120"
+					align="center"
+		>
+					<template slot-scope="scope">
+					  {{ scope.row.merchandiseName }}
+					</template>
+		</el-table-column>
 		  <el-table-column
 			fixed
-			label="货物类型"
+			label="购销类型"
 			width="120"
 			align="center"
 		  >
@@ -70,7 +80,7 @@
 			</template>
 		  </el-table-column>
 		  <el-table-column
-			label="货物价格"
+			label="购销价格"
 			width="150	"
 			align="center"
 		  >
@@ -79,7 +89,7 @@
 			</template>
 		  </el-table-column>
 		  <el-table-column
-			label="货物数量"
+			label="购销数量"
 			width="150"
 			align="center"
 		  >
@@ -136,14 +146,25 @@
 			label-position="right"
 		  >
 			<!-- 需更改 -->
-			<el-form-item label="货物类型">
-			  <el-input v-model="temp.purchasesaleType" placeholder="请输入货物类型" />
+			<el-form-item label="购销类型">
+				<template>
+				  <el-radio v-model="temp.purchasesaleType" label="购入">购入</el-radio>
+				  <el-radio v-model="temp.purchasesaleType" label="售出">售出</el-radio>
+				</template>
 			</el-form-item>
-			<el-form-item label="货物价格(单位:元)">
-			  <el-input v-model="temp.purchasesalePrice" placeholder="请输入货物价格" />
+			
+			
+			<el-form-item label="购销货物">
+			  <el-input v-model="temp.merchandiseName" placeholder="请输入货物名称" />
 			</el-form-item>
-			<el-form-item label="货物数量">
-			  <el-input v-model="temp.purchasesaleCount" placeholder="请输入货物数量" />
+			<el-form-item label="货物编号">
+			  <el-input v-model="temp.merchandiseId" placeholder="请输入货物编号" />
+			</el-form-item>
+			<el-form-item label="购销价格(单位:元)">
+			  <el-input v-model="temp.purchasesalePrice" placeholder="请输入购销价格" />
+			</el-form-item>
+			<el-form-item label="购销数量">
+			  <el-input v-model="temp.purchasesaleCount" placeholder="请输入购销数量" />
 			</el-form-item>
 			
 		</el-form>
@@ -165,6 +186,8 @@
 	import {deepClone} from "@/utils/index.js";
 	//需更改
 	const _temp = {
+		merchandiseName:'',
+		merchandiseId:'',
 	 
 	
 	  purchasesaleCount: '',
@@ -232,7 +255,7 @@
 			search(){
 				this.listLoading = true;
 				let data={
-					purchasesaleType:this.searchName
+					merchandiseName:this.searchName
 				}
 				selectByName(data).then((res)=>{
 					this.materiallist = res.datas;
