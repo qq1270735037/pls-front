@@ -1,5 +1,5 @@
 <template>
-	<h1>汽车维修物资使用记录</h1>
+	<h1>不写</h1>
 </template>
 
 <script>
