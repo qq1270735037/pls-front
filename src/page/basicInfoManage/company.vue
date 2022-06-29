@@ -15,7 +15,7 @@
 		</el-button-group>
 
 		<el-table v-loading="listLoading" :data="companyList.slice((cur_page-1)*pageSize,cur_page*pageSize)"
-			element-loading-text="正在疯狂加载" border fit height="670px" class="table-container" highlight-current-row>
+			element-loading-text="正在疯狂加载" border fit height="500px" class="table-container" highlight-current-row>
 			<el-table-column label="序号" width="100" align="center">
 				<template slot-scope="scope">
 					{{ scope.row.index }}
