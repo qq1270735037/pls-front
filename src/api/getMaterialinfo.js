@@ -35,3 +35,19 @@ export function deleteById(data){
 		data
 	})
 }
+
+export function getMaterialAndTypeList(data){
+	return request({
+		url: '/matetialinfo/getMaterialAndTypeList',//请求接口
+		method: 'post',//请求方式
+		data
+	})
+}
+
+export function selectType(){
+	return request({
+		url: '/matetialinfo/selectType',//请求接口
+		method: 'post',//请求方式
+		
+	})
+}
