@@ -1,228 +1,319 @@
 <template>
-	<div>
-		<h1>首页</h1>
-	</div>
+    <div>
+        <div style="background-color: rgb(255, 255, 255);padding: 10px;height: 500px;">
+
+            <!-- 数量统计 -->
+            <div class="main-top-card" >
+
+                <el-card class="box-card"  style="background-image: repeating-linear-gradient(122.5deg,rgb(255,253,20) -11.3%, rgba(214,49,102,1) 99.5%, rgba(43,60,194,1) 0, rgba(80,141,133, 0) 137.2%);">
+                    <div  class="text item">
+                        <div><i class="el-icon-user-solid icon-size icon-color-user"></i></div>
+                        <div>
+                            <div class="card-text card-num">用户总数</div>
+                            <div class="card-num">{{userCount}}</div>
+                        </div>
+                    </div>
+                </el-card>
+                <el-card class="box-card" style="background-image: repeating-linear-gradient(304.9deg,rgb(255,253,20) -13.7%, rgba(4,202,223,1) 99.5%, rgba(131,194,43,1) 0, rgba(80,141,133, 0) 112.4%);">
+                    <div  class="text item">
+                        <div><i class="el-icon-document icon-size icon-color-doc"></i></div>
+                        <div>
+                            <div class="card-text card-num">订单总数</div>
+                            <div class="card-num">666666</div>
+                        </div>
+                    </div>
+                </el-card>
+                <el-card class="box-card" style="background-image: repeating-linear-gradient(303.8deg,rgba(253,253,192,1) -13.4%, rgba(189,68,204,1) 96.1%, rgba(80,141,133,0) 115.9%);">
+                    <div  class="text item">
+                        <div><i class="el-icon-s-flag icon-size icon-color-user-type"></i></div>
+                        <div>
+                            <div class="card-text card-num">销售额</div>
+                            <div class="card-num">666666</div>
+                        </div>
+                    </div>
+                </el-card>
+
+            </div>
+            <!-- 数量统计结束 -->
+
+            <el-row style="margin-top: 15px;">
+                <el-col :span="7">
+                    <div >
+                        <el-card class="box-card-echarts" >
+                            <div class="text item echarts-render" id="typeEcharts">
+
+                            </div>
+                        </el-card>
+                    </div>
+                </el-col>
+                <el-col :span="7" >
+                    <div class="grid-content">
+                        <el-card class="box-card-echarts">
+                            <div  class="text item echarts-render" id="moneyEcharts">
+
+                            </div>
+                        </el-card>
+                    </div>
+                </el-col>
+                <el-col :span="8"><div class="grid-content " >
+                    <div class="grid-content">
+                        <el-card class="box-card-echarts-last" id="transporEcharts">
+                            <div  >
+                                11111
+                            </div>
+                        </el-card>
+                    </div>
+                </div>
+                </el-col>
+            </el-row>
+			<div class="box-card-echarts-last1" id="global"></div>
+        </div>
+        
+    </div>
 </template>
 
 <script>
-	import { getUserCount,getUserEChartsData,getCategoryEChartsData } from '@/api/getData.js';
-	import { setStorage, getStorage} from "@/utils/localStorage.js";
-	//引入面包屑组件
-	
-	export default {
-		
-		data() {
-			return {
-				userCount: "*******",
-				//用户图表配置
-				userOption: {
-					title: {
-						text: '用户类型统计分析图表',
-						subtext: '用户类型分析'
-					},
-					tooltip: {
-						trigger: 'axis',
-						axisPointer: {
-							type: 'shadow'
-						}
-					},
-					grid: {
-						left: '3%',
-						right: '4%',
-						bottom: '3%',
-						containLabel: true
-					},
-					xAxis: [
-						{
-							type: 'category',
-							data: [],
-							axisTick: {
-								alignWithLabel: true
-							}
-						}
-					],
-					yAxis: [
-						{
-							type: 'value'
-						}
-					],
-					series: [
-						{
-							name: '用户数量',
-							type: 'bar',
-							barWidth: '60%',
-							data: []
-						}
-					]
-				},
-				//文档图表配置
-				docOption: {
-				    legend: {
-				        top: 'bottom'
-				    },
-				    title: {
-				        text: '文档类型统计分析图表',
-				        subtext: '文档类型分析',
-				        left: 'left'
-				    },
-				    tooltip: {
-				        trigger: 'item',
-				        formatter: '{a} <br/>{b} : {c} ({d}%)'
-				    },
-				    toolbox: {
-				        show: true,
-				        feature: {
-				            mark: { show: true },
-				            dataView: { show: true, readOnly: false },
-				            restore: { show: true },
-				            saveAsImage: { show: true }
-				        }
-				    },
-				    series: [
-				        {
-				            name: '文档数量',
-				            type: 'pie',
-				            radius: [50, 250],
-				            center: ['50%', '50%'],
-				            roseType: 'area',
-				            itemStyle: {
-				                borderRadius: 8
-				            },
-				            data: []
-				        }
-				    ]
-				}
-			}
-		},
-		methods: {
-			//获取用户总数量
-			getUserCount(){
-				getUserCount().then(res => {
-					if(res != -1){
-						this.userCount = res.total;
-					}
-				})
-			},
-			//获取用户图表数据
-			getUserEChartsData(){
-				getUserEChartsData().then(res => {
-					if(res != -1){
-						//遍历返回的数据封装渲染图表需要的数据
-						res.datas.forEach(item => {
-							//数据名称
-							this.userOption.xAxis[0].data.push(item.authorityName);
-							//数量
-							this.userOption.series[0].data.push(item.authorityCount);
-						});
-						//渲染图表
-						let userEcharts = this.$echarts.init(document.getElementById("userEcharts"), 'dark');
-						userEcharts.setOption(this.userOption);
-					}
-				})
-			},
-			//获取文档类型图表数据
-			getCategoryEChartsData(){
-				getCategoryEChartsData().then(res => {
-					if(res != -1){
-						//遍历返回的数据,封装图表需要的数据
-						res.datas.forEach(item => {
-							let data = {
-								value: item.categoryCount,//数量
-								name: item.categoryName//数据名称
-							}
-							//放入渲染图表需要的数据
-							this.docOption.series[0].data.push(data);
-						});
-						//渲染图表
-						let docEcharts = this.$echarts.init(document.getElementById("docEcharts"), 'dark');
-						docEcharts.setOption(this.docOption);
-					}
-				});
-			}
-			
-		},
-		mounted() {
-			//获取用户总数量
-			this.getUserCount();
-			//初始化用户图表
-			this.getUserEChartsData();
-			//初始化文档图表
-			this.getCategoryEChartsData();
-		}
-	}
+    import { queryTotal } from '@/api/getUser.js';
+    import { setStorage, getStorage} from "@/utils/localStorage.js";
+    //引入面包屑组件
+
+    export default {
+
+        data() {
+            return {
+                //用户总数
+                userCount:'',
+                typeoption :{
+                    title: {
+                        text: 'Referer ',
+                        subtext: 'Fake Data',
+                        left: 'center'
+                    },
+                    tooltip: {
+                        trigger: 'item'
+                    },
+                    legend: {
+                        show:false,
+
+                    },
+                    series: [
+                        {
+                            avoidLabelOverlap: true,
+                            name: 'Access From',
+                            type: 'pie',
+                            radius: '50%',
+                            data: [
+                                { value: 1048, name: 'Search Engine' },
+                                { value: 735, name: 'Direct' },
+                                { value: 580, name: 'Email' },
+                                { value: 484, name: 'Union Ads' },
+                                { value: 300, name: 'Video Ads' }
+                            ],
+                            emphasis: {
+                                itemStyle: {
+                                    shadowBlur: 10,
+                                    shadowOffsetX: 0,
+                                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+                                }
+                            }
+                        }
+                    ]
+                },
+                moneyoption : {
+                    title: {
+                        text: 'Funnel',
+                        left: 'center'
+                    },
+                    tooltip: {
+                        trigger: 'item',
+                        formatter: '{a} <br/>{b} : {c}%'
+                    },
+                    toolbox: {
+                        feature: {
+                            // dataView: { readOnly: false },
+                            // restore: {},
+                            // saveAsImage: {}
+                        }
+                    },
+                    legend: {
+                        data: ['Show', 'Click', 'Visit', 'Inquiry', 'Order'],
+                        show:false,
+                    },
+                    series: [
+                        {
+                            avoidLabelOverlap: true,
+                            name: 'Funnel',
+                            type: 'funnel',
+                            left: '10%',
+                            top: 40,
+                            bottom: 60,
+                            width: '80%',
+                            min: 0,
+                            max: 100,
+                            minSize: '0%',
+                            maxSize: '100%',
+                            sort: 'descending',
+                            gap: 2,
+                            label: {
+                                show: true,
+                                position: 'inside'
+                            },
+                            labelLine: {
+                                length: 10,
+                                lineStyle: {
+                                    width: 1,
+                                    type: 'solid'
+                                }
+                            },
+                            itemStyle: {
+                                borderColor: '#fff',
+                                borderWidth: 1
+                            },
+                            emphasis: {
+                                label: {
+                                    fontSize: 20
+                                }
+                            },
+                            data: [
+                                { value: 60, name: 'Visit' },
+                                { value: 40, name: 'Inquiry' },
+                                { value: 20, name: 'Order' },
+                                { value: 80, name: 'Click' },
+                                { value: 100, name: 'Show' }
+                            ]
+                        }
+                    ]
+                },
+                transporoption :{
+                    title:{
+                        text:"运输利润",
+                        left:"center",
+                        top: 20,
+                    },
+                    xAxis: {
+                        type: 'category',
+                        data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+                    },
+                    yAxis: {
+                        type: 'value'
+                    },
+                    series: [
+                        {
+                            top: 40,
+                            bottom: 60,
+                            data: [120, 200, 150, 80, 70, 110, 130],
+                            type: 'bar'
+                        }
+                    ]
+                }
+
+
+            }
+
+
+        },
+        methods: {
+            getTyprEcharts(){
+                queryTotal().then((res)=>{
+
+                    if(res != -1){
+                        console.log("这是res\n");
+                        console.log(res);
+                        this.userCount = res.datas;
+
+                    }
+                })
+                //渲染图表
+                let typeEcharts = this.$echarts.init(document.getElementById("typeEcharts"));
+                let moneyEcharts= this.$echarts.init(document.getElementById("moneyEcharts"));
+                let transporEcharts= this.$echarts.init(document.getElementById("transporEcharts"));
+
+                typeEcharts.setOption(this.typeoption);
+                moneyEcharts.setOption(this.moneyoption);
+                transporEcharts.setOption(this.transporoption);
+            }
+
+
+
+        },
+        mounted() {
+            this.getTyprEcharts();
+        }
+    }
 </script>
 
 <style>
-  .text {
-    font-size: 14px;
-  }
+    .text {
+        font-size: 14px;
+    }
 
-  .item {
-    padding: 0px 0;
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-  }
+    .item {
 
-  .box-card {
-    width: 370px;
-	margin-right: 100px;
-	background-color: rgb(16,12,42) !important;
-  }
-  .card-text{
-	  margin-bottom: 10px;
-  }
-  .box-card-last {
-    width: 370px;
-	background-color: rgb(16,12,42) !important;
-  }
-  .main-top-card{
-	  display: flex;
-	  justify-content: center;
-	  
-  }
-  .card-num{
-	  font-size: 18px;
-	  font-weight: bolder;
-	  color: white;
-  }
-  .icon-size{
-	  font-size: 45px;
-  }
-  .icon-color-doc{
-	color:rgb(54,163,247)
-  }
-  .icon-color-user{
-	color:rgb(64,201,198)
-  }
-  .icon-color-user-type{
-  	color:rgb(244,81,108)
-  }
-  .icon-color-doc-type{
-  	color:rgb(52,191,163)
-  }
-  
-  /* 图表css*/
-  .echarts-div{
-	  margin-top: 50px;
-	  display: flex;
-	  justify-content: center;
-	  background-color: rgb(16,12,42);
-  }
-  .box-card-echarts{
-	  width: 840px;
-	  margin-right: 100px;
-	  height: 600px;
-	  background-color: rgb(16,12,42) !important;
-  }
-  .box-card-echarts-last{
-  	  width: 840px;
-	   height: 600px;
-	   background-color: rgb(16,12,42) !important;
-  }
-  .echarts-render{
-	  background-color: rgb(16,12,42);
-	  width: 740px;
-	   height: 550px;
-  }
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .box-card {
+        width: 400px;
+        margin-right: 150px;
+
+    }
+    .card-text{
+        margin-bottom: 10px;
+    }
+    .box-card-last {
+        width: 370px;
+        /* background-color: rgb(16,12,42) !important; */
+    }
+    .main-top-card{
+        display: flex;
+
+    }
+    .card-num{
+        font-size: 15px;
+        font-weight: bolder;
+        color: white;
+    }
+    .icon-size{
+        font-size: 45px;
+    }
+    .icon-color-doc{
+        color:rgb(170, 85, 0)
+    }
+    .icon-color-user{
+        color:rgb(18, 116, 201)
+    }
+    .icon-color-user-type{
+        color:rgb(244, 31, 45)
+    }
+
+
+    /* 图表css*/
+
+    .box-card-echarts{
+
+        width: 350px;
+        margin-right: 0px;
+        height: 250px;
+    }
+    .box-card-echarts-last{
+        width: 540px;
+        height: 250px;
+        background-color: rgb(255, 255, 255) !important;
+    }
+	.box-card-echarts-last1{
+	    width: 1140px;
+	    height: 250px;
+	    background-color: rgb(246, 255, 212) !important;
+	}
+    .echarts-render{
+        background-color: rgb(255, 255, 255);
+        width: 300px;
+        height: 250px;
+    }
+    .grid-content {
+        border-radius: 20px;
+        min-height: 36px;
+    }
 </style>

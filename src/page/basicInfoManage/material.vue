@@ -181,7 +181,7 @@
 			  <el-input v-model="temp.materialName" placeholder="请输入名称" />
 			</el-form-item>
 			<el-form-item label="价格(单位:元)" prop="materialPrice" >
-			  <el-input v-model="temp.materialPrice" placeholder="请输入价格(单位:元)" />
+			  <el-input v-model="temp.materialPrice" placeholder="请输入价格(单位:元)" type="number" />
 			</el-form-item>
 			<el-form-item label="用途" prop="materialUsage" >
 			  <el-input v-model="temp.materialUsage" placeholder="请输入用途" />

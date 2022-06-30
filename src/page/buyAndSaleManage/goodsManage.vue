@@ -81,7 +81,7 @@
 		  </el-table-column>
 		  <el-table-column
 			label="购销价格"
-			width="150	"
+			width="300	"
 			align="center"
 		  >
 			<template slot-scope="scope">
@@ -90,7 +90,7 @@
 		  </el-table-column>
 		  <el-table-column
 			label="购销数量"
-			width="150"
+			width="250"
 			align="center"
 		  >
 			<template slot-scope="scope">
