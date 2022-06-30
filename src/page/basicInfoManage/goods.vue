@@ -47,7 +47,6 @@
         highlight-current-row
     >
       <el-table-column
-          fixed
           label="序号"
           width="100"
           align="center"
@@ -57,7 +56,6 @@
         </template>
       </el-table-column>
       <el-table-column
-          fixed
           label="货物名"
           width="200"
           align="center"
@@ -245,6 +243,7 @@ export default {
           res.datas.forEach((item, index) => {
             item.index = index + 1;
           })
+		  this.total=res.datas.length;
           this.carList = res.datas;
           this.listLoading = false;
         }
