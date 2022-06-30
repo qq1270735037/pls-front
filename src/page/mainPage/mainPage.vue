@@ -19,7 +19,7 @@
                         <div><i class="el-icon-document icon-size icon-color-doc"></i></div>
                         <div>
                             <div class="card-text card-num">订单总数</div>
-                            <div class="card-num">666666</div>
+                            <div class="card-num">{{totalOrder}}</div>
                         </div>
                     </div>
                 </el-card>
@@ -40,7 +40,7 @@
                 <el-col :span="7">
                     <div >
                         <el-card class="box-card-echarts" >
-                            <div class="text item echarts-render" id="typeEcharts">
+                            <div class="text item echarts-render" v-loading="waitcharts" element-loading-text="正在疯狂加载" id="typeEcharts">
 
                             </div>
                         </el-card>
@@ -74,19 +74,30 @@
 
 <script>
     import { queryTotal } from '@/api/getUser.js';
+	import {
+		queryByCondition,
+		selectByName,
+		getByOperation,
+		queryByCondition1
+	} from "@/api/mainPage.js";
     import { setStorage, getStorage} from "@/utils/localStorage.js";
     //引入面包屑组件
 
     export default {
-
+		
         data() {
             return {
+				
+				//遮罩
+				waitcharts:true,
+				//订单总数
+				totalOrder:'0',
                 //用户总数
                 userCount:'',
+				//订单类型数据
                 typeoption :{
                     title: {
-                        text: 'Referer ',
-                        subtext: 'Fake Data',
+                        text: '订单类型 ',
                         left: 'center'
                     },
                     tooltip: {
@@ -102,13 +113,7 @@
                             name: 'Access From',
                             type: 'pie',
                             radius: '50%',
-                            data: [
-                                { value: 1048, name: 'Search Engine' },
-                                { value: 735, name: 'Direct' },
-                                { value: 580, name: 'Email' },
-                                { value: 484, name: 'Union Ads' },
-                                { value: 300, name: 'Video Ads' }
-                            ],
+                            data: [],
                             emphasis: {
                                 itemStyle: {
                                     shadowBlur: 10,
@@ -119,6 +124,7 @@
                         }
                     ]
                 },
+				//
                 moneyoption : {
                     title: {
                         text: 'Funnel',
@@ -126,7 +132,7 @@
                     },
                     tooltip: {
                         trigger: 'item',
-                        formatter: '{a} <br/>{b} : {c}%'
+                        formatter: '{a} <br/>{b} : {c}'
                     },
                     toolbox: {
                         feature: {
@@ -136,7 +142,7 @@
                         }
                     },
                     legend: {
-                        data: ['Show', 'Click', 'Visit', 'Inquiry', 'Order'],
+                        data: ['物资', '货物', '汽车', '运输'],
                         show:false,
                     },
                     series: [
@@ -184,27 +190,65 @@
                         }
                     ]
                 },
-                transporoption :{
-                    title:{
-                        text:"运输利润",
-                        left:"center",
-                        top: 20,
+				//运输利润数据
+                transporoption : {
+					title: {
+					    text: '运输利润',
+					    left: 'center'
+					},
+                  tooltip: {
+                    trigger: 'axis',
+                    axisPointer: {
+                      type: 'line',
+                      lineStyle: {
+                        color: 'rgba(0,0,0,0.2)',
+                        width: 1,
+                        type: 'solid'
+                      }
+                    }
+                  },
+                  legend: {
+						show:false
+                  },
+                  singleAxis: {
+                    top: 50,
+                    bottom: 50,
+                    axisTick: {},
+                    axisLabel: {},
+                    type: 'time',
+                    axisPointer: {
+                      animation: true,
+                      label: {
+                        show: true
+                      }
                     },
-                    xAxis: {
-                        type: 'category',
-                        data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-                    },
-                    yAxis: {
-                        type: 'value'
-                    },
-                    series: [
-                        {
-                            top: 40,
-                            bottom: 60,
-                            data: [120, 200, 150, 80, 70, 110, 130],
-                            type: 'bar'
+                    splitLine: {
+                      show: true,
+                      lineStyle: {
+                        type: 'dashed',
+                        opacity: 0.2
+                      }
+                    }
+                  },
+                  series: [
+                    {
+                      type: 'themeRiver',
+                      emphasis: {
+                        itemStyle: {
+                          shadowBlur: 20,
+                          shadowColor: 'rgba(0, 255, 127, 0.8)'
                         }
-                    ]
+                      },
+                      data: [
+                        ['2015/11/08', 10, 'DQ'],
+                        ['2015/11/09', 15, 'DQ'],
+                        ['2015/11/10', 35, 'DQ'],
+                        ['2015/11/11', 38, 'DQ'],
+                        ['2015/11/12', 22, 'DQ'],
+                        ['2015/11/13', 16, 'DQ']
+                      ]
+                    }
+                  ]
                 }
 
 
@@ -214,30 +258,91 @@
         },
         methods: {
             getTyprEcharts(){
+				this.typeoption.series[0].data=[];
+				this.transporoption.series[0].data=[];
+				//用户总数
                 queryTotal().then((res)=>{
-
                     if(res != -1){
-                        console.log("这是res\n");
-                        console.log(res);
                         this.userCount = res.datas;
-
                     }
                 })
-                //渲染图表
-                let typeEcharts = this.$echarts.init(document.getElementById("typeEcharts"));
-                let moneyEcharts= this.$echarts.init(document.getElementById("moneyEcharts"));
-                let transporEcharts= this.$echarts.init(document.getElementById("transporEcharts"));
-
-                typeEcharts.setOption(this.typeoption);
-                moneyEcharts.setOption(this.moneyoption);
-                transporEcharts.setOption(this.transporoption);
-            }
+				//运输订单数量
+				queryByCondition1({}).then((res)=>{
+				  console.log(res)
+				  if(res != -1){
+					  this.typeoption.series[0].data.push({ value: parseInt(res.datas.length), name: '运输订单' });
+						this.totalOrder =parseInt(this.totalOrder)+ parseInt(res.datas.length);
+						res.datas.forEach((item, index) => {
+							this.transporoption.series[0].data.push([item.transportationStartTime,parseInt(item.transportationMoney),"利润"])
+							
+							
+						})
+						console.log("************")
+				  }
+					
+				})
+				//货物订单数量
+				queryByCondition({}).then((res)=>{
+				  if(res != -1){
+				    
+				    this.totalOrder =parseInt(this.totalOrder)+ parseInt(res.datas.length);
+				    
+					// console.log("这是data");
+					// console.log(this.typeoption.series[0].data);
+					this.typeoption.series[0].data.push({ value: parseInt(res.datas.length), name: '货物订单' });
+					
+					
+				  }
+				
+				})
+				//物资订单数量
+				let data = {
+				  page: 1,
+				  limit:1000,
+				  materialName:"",
+				  }
+				selectByName(data).then((res)=>{
+					
+					if(res != -1){
+							this.totalOrder =parseInt(this.totalOrder)+ parseInt(res.datas.length);
+							this.typeoption.series[0].data.push({ value: parseInt(res.datas.length), name: '物资订单' });
+						}
+				})
+				//汽车购销数量
+				getByOperation({}).then((res) => {
+					if (res != -1) {
+						this.totalOrder =parseInt(this.totalOrder)+ parseInt(res.datas.length);
+						this.typeoption.series[0].data.push({ value: parseInt(res.datas.length), name: '汽车购销' });
+					}
+				
+				
+				})
+				
+                
+            },
+			drawEcharts(){
+				//饼状图数据
+					let typeEcharts = this.$echarts.init(document.getElementById("typeEcharts"));
+					let moneyEcharts= this.$echarts.init(document.getElementById("moneyEcharts"));
+					let transporEcharts= this.$echarts.init(document.getElementById("transporEcharts"));
+				//渲染图表
+				setTimeout(() =>{
+				 //    console.log("这是option"+this.typeoption);
+					// console.log(this.typeoption);
+				    typeEcharts.setOption(this.typeoption);
+				    moneyEcharts.setOption(this.moneyoption);
+				    transporEcharts.setOption(this.transporoption);
+					console.log("+++++++++++++++++++++++++++++++");
+					this.waitcharts=false
+				},500);
+			}
 
 
 
         },
         mounted() {
             this.getTyprEcharts();
+			this.drawEcharts();
         }
     }
 </script>
