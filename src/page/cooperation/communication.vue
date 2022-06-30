@@ -57,6 +57,7 @@
           {{ scope.row.communicationId }}
         </template>
       </el-table-column>
+
       <el-table-column
           label="信息标题"
           width="170"
@@ -66,24 +67,27 @@
           {{ scope.row.communicationTitle }}
         </template>
       </el-table-column>
+
       <el-table-column
           label="信息内容"
-          width="170	"
+          width="300	"
           align="center"
       >
         <template slot-scope="scope">
           {{ scope.row.communicationContext }}
         </template>
       </el-table-column>
+
       <el-table-column
           label="信息发布时间"
-          width="170"
+          width="200"
           align="center"
       >
         <template slot-scope="scope">
           <span>{{ scope.row.communicationTime }}</span>
         </template>
       </el-table-column>
+
       <el-table-column
           label="信息发布者"
           width="170	"
