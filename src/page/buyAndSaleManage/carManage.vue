@@ -262,9 +262,10 @@
 								message: '提交成功',
 								type: 'success'
 							})
-							this.saleDialogVisible = false
+							
 							this.init()
 						}
+						this.saleDialogVisible = false
 					})
 				} else {
 					
@@ -274,9 +275,10 @@
 								message: '提交成功',
 								type: 'success'
 							})
-							this.dialogVisible = false
+							
 							this.init()
 						}
+						this.dialogVisible = false
 					})
 				}
 			},
