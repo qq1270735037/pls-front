@@ -69,12 +69,12 @@
 			</template>
 		  </el-table-column>
 		  <el-table-column
-			label="人员编号"
+			label="人员姓名"
 			width="150	"
 			align="center"
 		  >
 			<template slot-scope="scope">
-			  {{ scope.row.employeeId }}
+			  {{ scope.row.employeeName }}
 			</template>
 		  </el-table-column>
 		  <el-table-column
@@ -155,19 +155,21 @@
 		  :title="dialogType === 'modify' ? '修改' : '新增'"
 		>
 		<el-form
+			:rules="rules"
 			ref="dataForm"
 			:model="temp"
 			label-width="150px"
 			label-position="right"
+			class="demo-ruleForm"
 		  >
 			
-			<el-form-item label="证件编号">
+			<el-form-item label="证件编号" prop ="certificateCode" >
 			  <el-input v-model="temp.certificateCode" placeholder="请输入证件编号" />
 			</el-form-item>
-			<el-form-item label="人员编号">
+			<el-form-item label="人员编号" prop="employeeId">
 			  <el-input v-model="temp.employeeId" placeholder="请输入人员编号" />
 			</el-form-item>
-			<el-form-item label="证件名">
+			<el-form-item label="证件名" prop = "certificateName">
 			  <el-input v-model="temp.certificateName" placeholder="请输入证件名" />
 			</el-form-item>
 			<el-form-item label="签发日期">
@@ -243,6 +245,26 @@
 	export default {
 		data() {
 			return {
+				rules: {
+				 
+						certificateCode: [
+						{ required: true, message: '请输入证件编号(仅数字)', trigger: 'blur' }
+						
+								],
+						employeeId: [
+						{ required: true,  message: '请输入人员编号(仅数字)', trigger: 'blur' },
+						
+										],
+						certificateName: [
+						{ required: true, message: '请输入证件名', trigger: 'blur' }
+										]
+					
+	
+					},
+				
+				
+				
+				total:1,
 				options:["交通部","民政局","法院","重庆大学","财务部","技术部"],
 			
 				listLoading:true,//查询时加载遮罩
@@ -290,6 +312,7 @@
 								//console.log(item)
 							})
 							this.materiallist = res.datas;
+							this.total=res.datas.length;
 							this.listLoading = false;
 						}
 				})
@@ -401,6 +424,22 @@
 			  this.listLoading = true
 			  setTimeout(() => {
 				  let data=this.temp;
+				  if(!Number.isInteger(data.certificateCode-'0')||!Number.isInteger(data.employeeId-'0')){
+					  this.$message({
+						  message:'请正确输入数字',
+						  type:'error'
+					  })
+					  return
+				  }
+				  if(data.certificateCode<1||data.employeeId<1){
+					  this.$message({
+									  message:'编号不能小于1',
+									  type:'error',
+									 
+					  })
+					  return
+				  }
+
 				  if(this.dialogType=='modify'){
 					  edit(data).then((res)=>{
 					  	console.log(res);
@@ -409,6 +448,7 @@
 					  		  message: '提交成功',
 					  		  type: 'success'
 					  		})
+							this.dialogVisible = false;
 					  	}
 					  	else{
 					  		this.$message({
@@ -426,6 +466,7 @@
 					  		  message: '新增成功',
 					  		  type: 'success'
 					  		})
+							this.dialogVisible = false;
 					  	}
 					  	else{
 					  		this.$message({
@@ -436,9 +477,9 @@
 					  });
 				  }
 
-				this.dialogVisible = false
+				
 				// this.loading = false
-				this.listLoading = false
+				this.listLoading = false;
 				
 			  })
 			  
