@@ -22,6 +22,8 @@ const service = axios.create({
 
 service.interceptors.response.use(
 	response => {
+		console.log("hhhh")
+		console.log(response)
 		if(response.data){//服务器返回了数据
 			if(response.data.code == 200 ){
 				//服务器返回了正确的数据
