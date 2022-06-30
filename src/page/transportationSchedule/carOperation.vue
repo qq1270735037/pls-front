@@ -60,12 +60,12 @@
       </el-table-column>
       <el-table-column
           fixed
-          label="车辆序号"
+          label="车牌号"
           width="200"
           align="center"
       >
         <template slot-scope="scope">
-          {{ scope.row.carId }}
+          {{ scope.row.carNumber }}
         </template>
       </el-table-column>
       <el-table-column
@@ -168,6 +168,7 @@
           <el-date-picker
               v-model="temp.transportationStartTime"
               type="datetime"
+              value-format="yyyy-MM-dd HH:mm:ss"
               placeholder="选择运输开始时间">
           </el-date-picker>
         </el-form-item>
@@ -176,6 +177,7 @@
           <el-date-picker
               v-model="temp.transportationEndTime"
               type="datetime"
+              value-format="yyyy-MM-dd HH:mm:ss"
               placeholder="选择运输结束时间">
           </el-date-picker>
         </el-form-item>
@@ -209,6 +211,7 @@ import {deepClone} from "@/utils/index.js";
 import {Message} from "element-ui";
   const _temp = {
     carId:'',
+    carNumber:'',
     transportationStartTime:'',
     transportationEndTime:'',
     transportationStartLocation:'',
@@ -235,6 +238,7 @@ import {Message} from "element-ui";
     initTransportationList(){
       this.listLoading = true;
       queryByCondition({}).then((res)=>{
+        console.log(res)
         if(res != -1){
           res.datas.forEach((item, index) => {
             item.index = index+1;
@@ -249,7 +253,7 @@ import {Message} from "element-ui";
     //搜索
     search() {
       let transportation = {
-        transportationMoney: this.inputData
+        carNumber: this.inputData
       }
       this.listLoading = true;
       queryByCondition(transportation).then((res) => {
