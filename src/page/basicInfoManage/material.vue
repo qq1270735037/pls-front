@@ -65,7 +65,6 @@
 			<template slot-scope="scope">
 			  {{ scope.row.materialId }}
 			</template> -->
-		  </el-table-column>
 		 
 		  <el-table-column
 			label="名称"
