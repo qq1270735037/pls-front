@@ -60,7 +60,7 @@
               :loading="loading"
               class="login-btn"
               type="primary"
-              @click="handleLogin"
+              @click="handleLogin2"
           >
             登录
           </el-button>
@@ -74,8 +74,12 @@
 </template>
 
 <script>
-import { isPassword } from '@/utils/validate'
-
+import { isPassword } from '@/utils/validate';
+import {userLogin} from "@/api/getData.js";
+import {
+		setStorage,
+		getStorage
+	} from "@/utils/localStorage.js";
 export default {
   name: 'Login',
   directives: {
@@ -187,21 +191,25 @@ export default {
         if (valid) {
           this.loading = true
           //1.发送登录请求后台方法,请求js
-          userLogin(this.loginForm).then(res => {
-            if(res != -1){
-              //正确的逻辑代码
-              //2.把后台返回的用户数据存入到缓存
-              setStorage("userInfo", JSON.stringify(res.datas));
-              //3.跳转到首页
-              this.$router.push({name: "home"});
-              //4.给用户提示
-              this.$message.success("登录成功");
-            }else{
-              setTimeout(() => {
-                this.loading = false;
-              }, 3000)
-            }
-          })
+		  let userData={
+			  userId:this.form.username,
+			  userPwd:this.form.password
+		  }
+		  userLogin(userData).then(res => {
+			  if(res != -1){
+				  //正确的逻辑代码
+				  //2.把后台返回的用户数据存入到缓存
+				  setStorage("userInfo", JSON.stringify(res.datas));
+				  //3.跳转到首页
+				  this.$router.push({name: "home"});
+				  //4.给用户提示
+				  this.$message.success("登录成功");
+			  }else{
+				  setTimeout(() => {
+					  this.loading = false;
+				  }, 3000)
+			  }
+		  })
         } else {
           this.$message.error('请输入正确的用户名和密码');
           return false;

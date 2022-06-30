@@ -13,7 +13,7 @@
 
 			<img class="el-menu-item menu-text menu-img"
 				src="https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fp0.itc.cn%2Fq_70%2Fimages03%2F20210626%2F71f657c7c43242a684f22c3ea6b858c8.gif&refer=http%3A%2F%2Fp0.itc.cn&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1658753581&t=00bc4b5c7ae62191b0ffe16863280f25" />
-			<span class="el-menu-item menu-text menu-float">欢迎您{{userAccount}}, 您是管理员</span>
+			<span class="el-menu-item menu-text menu-float">欢迎您{{userName}}, 您是{{authorityName}}</span>
 		</el-header>
 
 		<el-container style="height: 100%	; border: 1px solid #eee">
@@ -106,6 +106,7 @@
 			return {
 				levelList: null, //面包屑
 				userAccount: "", //用户账号
+				userName:"",
 				authorityName: "", //用户类型
 				menuList: [], //用户菜单
 				tableData: Array(20).fill(item) //表格数据
@@ -148,16 +149,16 @@
 			},
 			//退出登录
 			loginOutUser() {
-				//loginOut().then();
+				loginOut().then(()=>{
+					this.$router.push({name: "login"})
+				});
 				this.$message.warning("退出登录");
 			},
 			//初始化页面路由
 			initRouter() {
-				//1.取出用户信息以及菜单
-				// let userInfo = JSON.parse(getStorage("userInfo"));
-				// this.userAccount = userInfo.userAccount; //账号
-				// this.menuList = userInfo.userMenus; //用户菜单
-				this.authorityName = "管理员"; //类型
+				let userInfo = JSON.parse(getStorage("userInfo"));
+				this.userName = userInfo.userName; //账号
+				this.authorityName = userInfo.authorityName; //类型
 			}
 		},
 		mounted() {
@@ -165,7 +166,7 @@
 				//跳转默认选中
 				this.activeIndex = this.$route.path;
 				// console.log(this.$router.path+"path");
-				//this.initRouter();//初始化页面路由
+				this.initRouter();//初始化页面路由
 			})
 		},
 
