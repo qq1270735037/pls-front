@@ -43,7 +43,7 @@
                 :type="passwordType"
                 tabindex="2"
                 placeholder="请输入密码"
-                @keyup.enter.native="handleLogin"
+                @keyup.enter.native="handleLogin2"
             />
             <span
                 v-if="passwordType === 'password'"
