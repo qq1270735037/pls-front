@@ -60,7 +60,7 @@
               :loading="loading"
               class="login-btn"
               type="primary"
-              @click="handleLogin"
+              @click="handleLogin2"
           >
             登录
           </el-button>
@@ -74,8 +74,12 @@
 </template>
 
 <script>
-import { isPassword } from '@/utils/validate'
-
+import { isPassword } from '@/utils/validate';
+import {userLogin} from "@/api/getData.js";
+import {
+		setStorage,
+		getStorage
+	} from "@/utils/localStorage.js";
 export default {
   name: 'Login',
   directives: {
@@ -188,8 +192,8 @@ export default {
           this.loading = true
           //1.发送登录请求后台方法,请求js
 		  let userData={
-			  userId:this.loginForm.userAccount,
-			  userPwd:this.loginForm.userPassword
+			  userId:this.form.username,
+			  userPwd:this.form.password
 		  }
 		  userLogin(userData).then(res => {
 			  if(res != -1){
