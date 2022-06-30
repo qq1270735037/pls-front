@@ -59,7 +59,7 @@
       </el-table-column>
       <el-table-column
           label="信息标题"
-          width="200"
+          width="170"
           align="center"
       >
         <template slot-scope="scope">
@@ -68,7 +68,7 @@
       </el-table-column>
       <el-table-column
           label="信息内容"
-          width="180	"
+          width="170	"
           align="center"
       >
         <template slot-scope="scope">
@@ -84,7 +84,15 @@
           <span>{{ scope.row.communicationTime }}</span>
         </template>
       </el-table-column>
-
+      <el-table-column
+          label="信息发布者"
+          width="170	"
+          align="center"
+      >
+        <template slot-scope="scope">
+          {{ scope.row.employeeName }}
+        </template>
+      </el-table-column>
 
       <el-table-column
           fixed="right"
