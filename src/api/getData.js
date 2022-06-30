@@ -1,15 +1,21 @@
 import request from '../utils/request.js'
 
 	
-export function selectOne(data){
+export function userLogin(data){
 	return request({
-		url: '/matetialinfo/selectOne',//请求接口
+		url: '/login',//请求接口
 		method: 'post',//请求方式
 		data
 	})
 }
 
-
+export function loginOut(data){
+	return request({
+		url: '/loginOut',//请求接口
+		method: 'get',//请求方式
+		data
+	})
+}
 
 
 // 1.登录

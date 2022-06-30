@@ -79,7 +79,11 @@ export default {
         if (valid) {
           this.loading = true
           //1.发送登录请求后台方法,请求js
-		  userLogin(this.loginForm).then(res => {
+		  let userData={
+			  userId:this.loginForm.userAccount,
+			  userPwd:this.loginForm.userPassword
+		  }
+		  userLogin(userData).then(res => {
 			  if(res != -1){
 				  //正确的逻辑代码
 				  //2.把后台返回的用户数据存入到缓存
