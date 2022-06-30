@@ -171,14 +171,46 @@
 			  <el-input v-model="temp.certificateName" placeholder="请输入证件名" />
 			</el-form-item>
 			<el-form-item label="签发日期">
+			  <div class="block">
+			     
+			      <el-date-picker
+			        v-model="temp.certificateStartTime"
+			        type="date"
+			        placeholder="选择日期">
+			      </el-date-picker>
+			    </div>
+			</el-form-item>
+			<!-- <el-form-item label="签发日期">
 			  <el-input v-model="temp.certificateStartTime" placeholder="请输入签发日期" />
-			</el-form-item>
+			</el-form-item> -->
 			<el-form-item label="失效日期">
+			  <div class="block">
+			     
+			      <el-date-picker
+			        v-model="temp.certificateEndTime"
+			        type="date"
+			        placeholder="选择日期">
+			      </el-date-picker>
+			    </div>
+			</el-form-item>
+			<!-- <el-form-item label="失效日期">
 			  <el-input v-model="temp.certificateEndTime" placeholder="请输入失效日期" />
-			</el-form-item>
+			</el-form-item> -->
 			<el-form-item label="签发单位">
-			  <el-input v-model="temp.certificateAgent" placeholder="请输入签发单位" />
+			  <template>
+			    <el-select v-model="temp.certificateAgent" placeholder="请选择签发单位">
+			      <el-option
+			        v-for="item in options"
+			        :key="item"
+			        :label="item"
+			        :value="item">
+			      </el-option>
+			    </el-select>
+			  </template>
 			</el-form-item>
+		<!-- 	<el-form-item label="签发单位">
+			  <el-input v-model="temp.certificateAgent" placeholder="请输入签发单位" />
+			</el-form-item> -->
 		</el-form>
 		<el-button type="danger" @click="dialogVisible = false">
 		  取消
@@ -211,6 +243,7 @@
 	export default {
 		data() {
 			return {
+				options:["交通部","民政局","法院","重庆大学","财务部","技术部"],
 			
 				listLoading:true,//查询时加载遮罩
 				cur_page:1,
@@ -349,7 +382,7 @@
 						  else{
 						  	this.$message({
 						  	  message: '删除失败',
-						  	  type: 'success'
+						  	  type: 'error'
 						  	})
 						  }
 						  
@@ -380,7 +413,7 @@
 					  	else{
 					  		this.$message({
 					  		  message: '提交失败',
-					  		  type: 'success'
+					  		  type: 'error'
 					  		})
 					  	}
 					  });
@@ -397,7 +430,7 @@
 					  	else{
 					  		this.$message({
 					  		  message: '新增失败',
-					  		  type: 'success'
+					  		  type: 'error'
 					  		})
 					  	}
 					  });

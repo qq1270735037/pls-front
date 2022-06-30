@@ -15,7 +15,7 @@
 		</el-button-group>
 
 		<el-table v-loading="listLoading" :data="companyList.slice((cur_page-1)*pageSize,cur_page*pageSize)"
-			element-loading-text="正在疯狂加载" border fit height="670px" class="table-container" highlight-current-row>
+			element-loading-text="正在疯狂加载" border fit height="500px" class="table-container" highlight-current-row>
 			<el-table-column label="序号" width="100" align="center">
 				<template slot-scope="scope">
 					{{ scope.row.index }}
@@ -88,7 +88,12 @@
 					<el-input v-model="temp.companyName" placeholder="请输入名称" />
 				</el-form-item>
 				<el-form-item label="创建时间">
-					<el-input v-model="temp.companyTime" placeholder="请输入时间(yyyy-MM-dd)" />
+					<!-- <el-input v-model="temp.companyTime" placeholder="请输入时间(yyyy-MM-dd)" /> -->
+					 <el-date-picker
+					      v-model="temp.companyTime"
+					      type="datetime"
+					      placeholder="选择日期时间">
+					    </el-date-picker>
 				</el-form-item>
 				<el-form-item label="地址">
 					<el-input v-model="temp.companyCity" placeholder="请输入公司所在地址" />
@@ -271,6 +276,7 @@
 						})
 						this.companyList = res.datas;
 						this.total=this.companyList.length;
+						this.cur_page=1;
 						this.listLoading = false;
 					}
 				})
