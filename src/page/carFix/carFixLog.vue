@@ -232,9 +232,10 @@
 								message: '提交成功',
 								type: 'success'
 							})
-							this.dialogVisible = false
+							
 							this.init()
 						}
+						this.dialogVisible = false
 					})
 				} else {
 					insert(data).then((res) => {
@@ -243,9 +244,10 @@
 								message: '提交成功',
 								type: 'success'
 							})
-							this.dialogVisible = false
+							
 							this.init()
 						}
+						this.dialogVisible = false
 					})
 				}
 			},
