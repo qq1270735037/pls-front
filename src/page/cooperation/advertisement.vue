@@ -43,7 +43,7 @@
         element-loading-text="正在疯狂加载"
         border
         fit
-        height="100%"
+        height="500px"
         class="table-container"
         highlight-current-row
     >
@@ -57,7 +57,9 @@
         </template>
       </el-table-column>
       <el-table-column
+          show-overflow-tooltip
           label="广告内容"
+          width="300"
           align="center"
       >
         <template slot-scope="scope">
@@ -65,7 +67,8 @@
         </template>
       </el-table-column>
       <el-table-column
-          label="广告金额"
+          label="广告金额(元)"
+          width="100"
           align="center"
       >
         <template slot-scope="scope">
@@ -101,11 +104,16 @@
       </el-table-column>
       <el-table-column
           label="广告图片"
-          width="80"
+          width="300"
           align="center"
       >
         <template slot-scope="scope">
-          <span>{{ scope.row.adImages }}</span>
+<!--          <span>{{ scope.row.adImages }}</span>-->
+          <el-image
+              style="width: 100px; height: 100px"
+              :src="scope.row.adImages"
+              :preview-src-list="[scope.row.adImages]">
+          </el-image>
         </template>
       </el-table-column>
       <el-table-column
@@ -175,8 +183,9 @@
               :show-file-list="false"
               :on-success="handleAvatarSuccess"
               :before-upload="beforeAvatarUpload"
+              accept=".jpg, .jpeg,.png"
           >
-            <img v-if="temp.icon" :src="temp.icon" class="avatar">
+            <img v-if="temp.adImages" :src="temp.adImages" class="avatar">
             <i v-else class="el-icon-plus avatar-uploader-icon" />
           </el-upload>
         </el-form-item>
@@ -203,7 +212,7 @@ const _temp = {
   adAdviser: "",
   adStart: "",
   adEnd: "",
-  // adImages: ""
+  adImages: ""
 }
 
 export default {
@@ -215,13 +224,14 @@ export default {
       searchloading:false, //搜索按钮显示加载
       listLoading:true,//查询时加载遮罩
       adList:[],       //存储表单内容
-      uploadUrl: 'http://localhost:8080/fileupload/test',
+      uploadUrl: 'http://localhost:8080/fileupload/add',
       listQuery:{       // 查询的数据
         limit: 10,//每页条数
         page: 1,//当前页码
         total: 0,//总条数
         adContent: "" //查询的广告内容
       },
+      fileList:[],
       temp: Object.assign({}, _temp),
       dialogVisible: false,   //弹出框显示
       dialogType: 'create',
@@ -230,9 +240,12 @@ export default {
 
   methods: {
     handleAvatarSuccess(res, file) {
-
-      console.log("文件上传成功")
+      this.fileList.push(res);
+      console.log("fiLIST:SSS  "+ this.fileList)
       console.log(res)
+      this.temp.adImages = res
+      console.log("文件上传成功")
+      console.log("res:=>>>"+res)
       console.log(file.raw)
       this.temp.site_logo = URL.createObjectURL(file.raw)
     },
@@ -241,16 +254,15 @@ export default {
         this.$message.error('请设置正确的图片上传地址!')
         return false
       }
-      // const isJPG = file.type === 'image/*'
+      const isJPG = (file.type === 'image/jpeg') ||(file.type ==='image/png')
       const isLt2M = file.size / 1024 / 1024 < 2
-      // if (!isJPG) {
-      //   this.$message.error('只能上传图片格式!')
-      // }
+      if (!isJPG) {
+        this.$message.error('只能上传JPG或者PNG图片格式!')
+      }
       if (!isLt2M) {
         this.$message.error('上传图片大小不能超过 2MB!')
       }
-      // return isJPG && isLt2M
-      return  isLt2M
+      return isJPG && isLt2M
     },
     //初始化表格
     initAdList(){
@@ -351,13 +363,30 @@ export default {
       this.listLoading = true
       //判断新增还是修改
       if(this.dialogType==="create"){
-        // console.log("新增")
+        let data ={
+          adContent: this.temp.adContent,
+          adMoney: this.temp.adMoney,
+          adAdviser: this.temp.adAdviser,
+          adStart: this.temp.adStart,
+          adEnd: this.temp.adEnd,
+          adImages: this.temp.adImages
+        }
+        console.log("新增")
         // console.log( this.temp)
-        add(this.temp)
+        console.log(data)
+        console.log("data: " + data)
+        add(data)
       }else  if(this.dialogType==="modify"){
-        // console.log("修改")
-        // console.log( this.temp)
-
+        console.log("修改")
+        console.log( this.temp)
+        let data ={
+          adContent: this.temp.adContent,
+          adMoney: this.temp.adMoney,
+          adAdviser: this.temp.adAdviser,
+          adStart: this.temp.adStart,
+          adEnd: this.temp.adEnd,
+          adImages: this.temp.adImages
+        }
         update(this.temp);
 
       }

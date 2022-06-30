@@ -5,7 +5,7 @@
         style="width: 190px;margin-right: 40px;margin-top: 20px;margin-bottom: 20px;"
         v-model="inputData"
         size="small"
-        placeholder="请输入money"
+        placeholder="请输入车牌号"
         clearable
         class="filter-item"
     />
