@@ -262,7 +262,7 @@
 								message: '提交成功',
 								type: 'success'
 							})
-							
+							this.selectValue = "";
 							this.init()
 						}
 						this.saleDialogVisible = false
@@ -275,7 +275,7 @@
 								message: '提交成功',
 								type: 'success'
 							})
-							
+							this.selectValue = "";
 							this.init()
 						}
 						this.dialogVisible = false
