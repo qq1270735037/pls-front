@@ -32,8 +32,9 @@ import carrierBusiness from "@/page/transportationSchedule/carrierBusiness";
 import advertisement from "@/page/cooperation/advertisement";
 import communication from "@/page/cooperation/communication";
 
+import common from "@/page/commonUser/common";
 import ad from "@/page/commonUser/ad";
-
+import companyInformation from "@/page/commonUser/ad";
 
 import test from "@/page/test"
 Vue.use(Router);
@@ -278,11 +279,16 @@ export default new Router({
 		{
 			path: '/common',
 			name: 'common',	
-			component: basic,
+			component: common,
 			children: [{
 				path: '/ad',
 				name: 'ad',
 				component: ad
+			},
+			{
+				path:'aboutUs',
+				name:'aboutUs',
+				component: companyInformation
 			}]
 		}
 	]
