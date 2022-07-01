@@ -201,7 +201,14 @@ export default {
 				  //2.把后台返回的用户数据存入到缓存
 				  setStorage("userInfo", JSON.stringify(res.datas));
 				  //3.跳转到首页
-				  this.$router.push({name: "home"});
+				  let info=res.datas;
+				  if(info.authorityName=="普通用户"){
+					  this.$router.push({name:"ad"});
+				  }
+				  else{
+					  //管理员
+					  this.$router.push({name: "home"});
+				  }				  
 				  //4.给用户提示
 				  this.$message.success("登录成功");
 			  }else{
