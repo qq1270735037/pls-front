@@ -3,7 +3,7 @@
         <div style="background-color: rgb(255, 255, 255);padding: 10px;height: 495px;">
 
             <!-- 数量统计 -->
-            <div class="main-top-card" >
+            <div class="main-top-card" style="margin-top: 50px;">
 
                 <el-card class="box-card"  style="background-image: repeating-linear-gradient(122.5deg,rgb(255,253,20) -11.3%, rgba(214,49,102,1) 99.5%, rgba(43,60,194,1) 0, rgba(80,141,133, 0) 137.2%);">
                     <div  class="text item">
@@ -36,8 +36,8 @@
             </div>
             <!-- 数量统计结束 -->
 
-            <el-row style="margin-top: 15px;">
-                <el-col :span="11">
+            <el-row style="margin-top: 100px;">
+                <el-col :span="7">
                     <div >
                         <el-card class="box-card-echarts" >
                             <div class="text item echarts-render" v-loading="waitcharts" element-loading-text="正在疯狂加载" id="typeEcharts">
@@ -46,7 +46,7 @@
                         </el-card>
                     </div>
                 </el-col>
-                <el-col :span="11" >
+                <el-col :span="7" >
                     <div class="grid-content">
                         <el-card class="box-card-echarts">
                             <div  class="text item echarts-render" v-loading="waitcharts" element-loading-text="正在疯狂加载" id="moneyEcharts">
@@ -56,7 +56,7 @@
                     </div>
                 </el-col>
                 <el-col :span="10"><div class="grid-content " >
-                    <div class="grid-content" style="margin-top: 30px;">
+                    <div class="grid-content">
                         <el-card class="box-card-echarts-last" v-loading="waitcharts" element-loading-text="正在疯狂加载" id="transporEcharts">
                             <div  >
                             
@@ -380,7 +380,7 @@
 				    typeEcharts.setOption(this.typeoption);
 				    moneyEcharts.setOption(this.moneyoption);
 				    transporEcharts.setOption(this.transporoption);
-					// console.log("+++++++++++++++++++++++++++++++");
+					console.log("+++++++++++++++++++++++++++++++");
 					this.waitcharts=false
 				},500);
 			}
@@ -446,13 +446,13 @@
 
     .box-card-echarts{
 
-        width: 550px;
+        width: 350px;
         margin-right: 0px;
-        height: 450px;
+        height: 250px;
     }
     .box-card-echarts-last{
-        width: 1150px;
-        height: 450px;
+        width: 540px;
+        height: 250px;
         background-color: rgb(255, 255, 255) !important;
     }
 	.box-card-echarts-last1{
@@ -462,8 +462,8 @@
 	}
     .echarts-render{
         background-color: rgb(255, 255, 255);
-        width: 550px;
-        height: 450px;
+        width: 300px;
+        height: 250px;
     }
     .grid-content {
         border-radius: 20px;
