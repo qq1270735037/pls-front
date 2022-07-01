@@ -211,8 +211,8 @@
               item.index = index + 1;
             })
             this.addressList = res.datas;
-			this.total=this.addressList.length;
-			this.cur_page=1;
+			      this.total=this.addressList.length;
+            this.cur_page=1;
             this.listLoading = false;
           }
         })
