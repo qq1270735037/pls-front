@@ -250,6 +250,7 @@ export default {
     search(){
       this.searchloading = true
       this.initcommunicationList()
+      this.cur_page = 1
       setTimeout(() => {
         this.searchloading = false;
       }, 1500)
@@ -312,17 +313,17 @@ export default {
       let data = this.temp
       data.communicationTime = Date.parse(new Date(this.temp.communicationTime))
       if(this.dialogType==="create"){
-        // console.log("新增")
-        // console.log( this.temp)
+
         add(data)
+        this.refresh()
         this.initcommunicationList()
       }else  if(this.dialogType==="modify"){
-        // console.log("修改")
-        // console.log( this.temp)
-        update(data)
 
+        update(data)
+        this.refresh()
         this.initcommunicationList()
       }
+      this.refresh()
       setTimeout(() => {
         this.$message({
           message: '成功',
