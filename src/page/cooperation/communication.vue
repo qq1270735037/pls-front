@@ -235,7 +235,7 @@ export default {
           this.communicationInfo = res.datas;
           this.total = this.communicationInfo.length;
           this.listLoading = false;
-          //console.log(this.communicationInfo)
+          console.log("王耀辉")
           setTimeout(() => {
             this.listLoading = false;
           }, 100)
@@ -320,10 +320,14 @@ export default {
       }else  if(this.dialogType==="modify"){
 
         update(data)
+        console.log("修改成功")
         this.refresh()
-        this.initcommunicationList()
+
       }
-      this.refresh()
+      setTimeout(() => {
+        this.refresh()
+      }, 300)
+
       setTimeout(() => {
         this.$message({
           message: '成功',
