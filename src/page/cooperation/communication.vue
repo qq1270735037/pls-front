@@ -235,7 +235,7 @@ export default {
           this.communicationInfo = res.datas;
           this.total = this.communicationInfo.length;
           this.listLoading = false;
-          //console.log(this.communicationInfo)
+          console.log("王耀辉")
           setTimeout(() => {
             this.listLoading = false;
           }, 100)
@@ -250,6 +250,7 @@ export default {
     search(){
       this.searchloading = true
       this.initcommunicationList()
+      this.cur_page = 1
       setTimeout(() => {
         this.searchloading = false;
       }, 1500)
@@ -312,17 +313,21 @@ export default {
       let data = this.temp
       data.communicationTime = Date.parse(new Date(this.temp.communicationTime))
       if(this.dialogType==="create"){
-        // console.log("新增")
-        // console.log( this.temp)
+
         add(data)
+        this.refresh()
         this.initcommunicationList()
       }else  if(this.dialogType==="modify"){
-        // console.log("修改")
-        // console.log( this.temp)
-        update(data)
 
-        this.initcommunicationList()
+        update(data)
+        console.log("修改成功")
+        this.refresh()
+
       }
+      setTimeout(() => {
+        this.refresh()
+      }, 300)
+
       setTimeout(() => {
         this.$message({
           message: '成功',

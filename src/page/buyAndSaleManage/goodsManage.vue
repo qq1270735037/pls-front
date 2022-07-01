@@ -48,9 +48,9 @@
 		  highlight-current-row
 		>
 		<el-table-column
-			fixed
+			
 			label="序号"
-			width="120"
+			width="150"
 			align="center"
 		>
 			<template slot-scope="scope">
@@ -60,9 +60,9 @@
 		
 		<!-- 需更改 -->
 		<el-table-column
-					fixed
+					
 					label="货物名"
-					width="120"
+					width="200"
 					align="center"
 		>
 					<template slot-scope="scope">
@@ -70,9 +70,9 @@
 					</template>
 		</el-table-column>
 		  <el-table-column
-			fixed
+			
 			label="购销类型"
-			width="120"
+			width="200"
 			align="center"
 		  >
 			<template slot-scope="scope">
@@ -81,7 +81,7 @@
 		  </el-table-column>
 		  <el-table-column
 			label="购销价格"
-			width="300	"
+			width="200"
 			align="center"
 		  >
 			<template slot-scope="scope">
@@ -90,7 +90,7 @@
 		  </el-table-column>
 		  <el-table-column
 			label="购销数量"
-			width="250"
+			width="200"
 			align="center"
 		  >
 			<template slot-scope="scope">
@@ -98,14 +98,11 @@
 			</template>
 		  </el-table-column>
 		  
-		  
-		  
-		 
 		  <el-table-column
 			fixed="right"
 			label="操作"
 			width="200"
-			align="left"
+			align="center"
 		  >
 			<template slot-scope="scope">
 			  <el-button-group>
@@ -133,8 +130,8 @@
 			:current-page="cur_page" :page-sizes="[10,15,20,50]" :page-size="pageSize"
 			layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
 		
-		<el-dialog
-		
+	
+	
 		<el-dialog
 		  :visible.sync="dialogVisible"
 		  :title="dialogType === 'modify' ? '修改' : '新增'"
@@ -144,9 +141,12 @@
 			:model="temp"
 			label-width="150px"
 			label-position="right"
+			
+			:rules="rules"
+			class="demo-ruleForm"
 		  >
 			<!-- 需更改 -->
-			<el-form-item label="购销类型">
+			<el-form-item label="购销类型" prop="purchasesaleType">
 				<template>
 				  <el-radio v-model="temp.purchasesaleType" label="购入">购入</el-radio>
 				  <el-radio v-model="temp.purchasesaleType" label="售出">售出</el-radio>
@@ -154,16 +154,16 @@
 			</el-form-item>
 			
 			
-			<el-form-item label="购销货物">
+			<el-form-item label="购销货物" prop="merchandiseName">
 			  <el-input v-model="temp.merchandiseName" placeholder="请输入货物名称" />
 			</el-form-item>
-			<el-form-item label="货物编号">
+			<el-form-item label="货物编号" prop="merchandiseId">
 			  <el-input v-model="temp.merchandiseId" placeholder="请输入货物编号" />
 			</el-form-item>
-			<el-form-item label="购销价格(单位:元)">
-			  <el-input v-model="temp.purchasesalePrice" placeholder="请输入购销价格" />
+			<el-form-item label="购销价格(单位:元)" prop="purchasesalePrice" >
+			  <el-input v-model="temp.purchasesalePrice"  placeholder="请输入购销价格" />
 			</el-form-item>
-			<el-form-item label="购销数量">
+			<el-form-item label="购销数量" prop="purchasesaleCount" >
 			  <el-input v-model="temp.purchasesaleCount" placeholder="请输入购销数量" />
 			</el-form-item>
 			
@@ -199,7 +199,49 @@
 	}
 	export default {
 		data() {
+			
+			 // var checkNum = (rule, value, callback) => {
+			 //        if (!value) {
+			 //          return callback(new Error('输入不能为空'));
+			 //        }
+			 //        setTimeout(() => {
+			 //          if (!Number.isInteger(value)) {
+			 //            callback(new Error('请输入数字值'));
+			 //          } else {
+			 //            if (value <1) {
+			 //              callback(new Error('输入值必须大于1'));
+			 //            } else {
+			 //              callback();
+			 //            }
+			 //          }
+			 //        }, 1000);
+			 //      };s
 			return {
+				
+				total:0,
+				
+				
+				
+				rules: {
+				  purchasesaleType: [
+				  { required: true, message: '请选择购销类型', trigger: 'change' }
+									],
+						merchandiseName: [
+						{ required: true, message: '请输入货物名称', trigger: 'blur' },
+						{ min: 3, max: 10,message: '长度在 3 到 10 个字符', trigger: 'blur' }
+										],
+						merchandiseId: [
+						{ required: true,  message: '请输入货物编号(仅数字)', trigger: 'blur' },
+						
+										],
+						purchasesalePrice: [
+						{ required: true, message: '请输入购销价格(仅数字)', trigger: 'blur' }
+										],
+						purchasesaleCount: [
+						{ required: true, message: '请输入购销数量(仅数字)', trigger: 'blur' }
+										]
+						
+					},
 				cur_page:1,
 				pageSize:10,
 			
@@ -246,6 +288,7 @@
 								//console.log(item)
 							})
 							this.materiallist = res.datas;
+							this.total=res.datas.length;
 							this.listLoading = false;
 						}
 				})
@@ -357,6 +400,21 @@
 			  this.listLoading = true
 			  setTimeout(() => {
 				  let data=this.temp;
+				  if(!Number.isInteger(data.merchandiseId-'0')||!Number.isInteger(data.purchasesalePrice-'0')||!Number.isInteger(data.purchasesaleCount-'0')){
+					  this.$message({
+						  message:'请正确输入数字',
+						  type:'error'
+					  })
+					  return
+				  }
+				  if(data.materialId<1||data.purchasesalePrice<1||data.purchasesaleCount<1){
+					  this.$message({
+									  message:'数字不能小于1',
+									  type:'error',
+									 
+					  })
+					  return
+				  }
 				  if(this.dialogType=='modify'){
 					  edit(data).then((res)=>{
 					  	console.log(res);
@@ -365,6 +423,7 @@
 					  		  message: '提交成功',
 					  		  type: 'success'
 					  		})
+							this.dialogVisible = false
 					  	}
 					  	else{
 					  		this.$message({
@@ -382,6 +441,7 @@
 					  		  message: '新增成功',
 					  		  type: 'success'
 					  		})
+							this.dialogVisible = false
 					  	}
 					  	else{
 					  		this.$message({
@@ -392,7 +452,7 @@
 					  });
 				  }
 
-				this.dialogVisible = false
+				
 				// this.loading = false
 				this.listLoading = false
 				

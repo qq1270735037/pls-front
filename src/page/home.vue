@@ -35,21 +35,17 @@
 					</el-submenu>
 					<el-submenu index="2">
 						<template slot="title"><i class="el-icon-menu"></i>购销存管理</template>
-						<el-menu-item index="officeSupplies">办公耗材采购</el-menu-item>
-						<el-menu-item index="materialManage">物资购销</el-menu-item>
+						
 						<el-menu-item index="carManage">汽车购销</el-menu-item>
 						<el-menu-item index="goodsManage">货物购销</el-menu-item>
-						<el-menu-item index="buildManage">建筑构物租售</el-menu-item>
 					</el-submenu>
 					<el-submenu index="3">
 						<template slot="title"><i class="el-icon-setting"></i>汽车修检记录</template>
 						<el-menu-item index="carFixLog">车辆维修记录</el-menu-item>
-						<el-menu-item index="materialUseLog">维修物资使用记录</el-menu-item>
 					</el-submenu>
           <el-submenu index="4">
             <template slot="title"><i class="el-icon-truck"></i>运输调度</template>
             <el-menu-item index="carOperation">车辆运输记录</el-menu-item>
-            <el-menu-item index="carrierBusiness">承运商业务记录</el-menu-item>
           </el-submenu>
           <el-submenu index="5">
             <template slot="title"><i class="el-icon-view"></i>对外合作</template>

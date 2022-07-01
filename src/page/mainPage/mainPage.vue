@@ -19,7 +19,7 @@
                         <div><i class="el-icon-document icon-size icon-color-doc"></i></div>
                         <div>
                             <div class="card-text card-num">订单总数</div>
-                            <div class="card-num">666666</div>
+                            <div class="card-num">{{totalOrder}}</div>
                         </div>
                     </div>
                 </el-card>
@@ -28,7 +28,7 @@
                         <div><i class="el-icon-s-flag icon-size icon-color-user-type"></i></div>
                         <div>
                             <div class="card-text card-num">销售额</div>
-                            <div class="card-num">666666</div>
+                            <div class="card-num">{{totalMoney}}</div>
                         </div>
                     </div>
                 </el-card>
@@ -40,7 +40,7 @@
                 <el-col :span="7">
                     <div >
                         <el-card class="box-card-echarts" >
-                            <div class="text item echarts-render" id="typeEcharts">
+                            <div class="text item echarts-render" v-loading="waitcharts" element-loading-text="正在疯狂加载" id="typeEcharts">
 
                             </div>
                         </el-card>
@@ -49,7 +49,7 @@
                 <el-col :span="7" >
                     <div class="grid-content">
                         <el-card class="box-card-echarts">
-                            <div  class="text item echarts-render" id="moneyEcharts">
+                            <div  class="text item echarts-render" v-loading="waitcharts" element-loading-text="正在疯狂加载" id="moneyEcharts">
 
                             </div>
                         </el-card>
@@ -57,7 +57,7 @@
                 </el-col>
                 <el-col :span="8"><div class="grid-content " >
                     <div class="grid-content">
-                        <el-card class="box-card-echarts-last" id="transporEcharts">
+                        <el-card class="box-card-echarts-last" v-loading="waitcharts" element-loading-text="正在疯狂加载" id="transporEcharts">
                             <div  >
                                 11111
                             </div>
@@ -66,7 +66,7 @@
                 </div>
                 </el-col>
             </el-row>
-			<div class="box-card-echarts-last1" id="global"></div>
+<!-- 			<div class="box-card-echarts-last1" id="global"></div> -->
         </div>
         
     </div>
@@ -74,19 +74,34 @@
 
 <script>
     import { queryTotal } from '@/api/getUser.js';
+	import {
+		queryByCondition,
+		selectByName,
+		getByOperation,
+		queryByCondition1,
+		queryByTypeId,
+		getmoney
+	} from "@/api/mainPage.js";
     import { setStorage, getStorage} from "@/utils/localStorage.js";
     //引入面包屑组件
 
     export default {
-
+		
         data() {
             return {
+				
+				//遮罩
+				waitcharts:true,
+				//订单总数
+				totalOrder:'0',
                 //用户总数
                 userCount:'',
+				//销售总额
+				totalMoney:'',
+				//订单类型数据
                 typeoption :{
                     title: {
-                        text: 'Referer ',
-                        subtext: 'Fake Data',
+                        text: '订单类型 ',
                         left: 'center'
                     },
                     tooltip: {
@@ -102,13 +117,7 @@
                             name: 'Access From',
                             type: 'pie',
                             radius: '50%',
-                            data: [
-                                { value: 1048, name: 'Search Engine' },
-                                { value: 735, name: 'Direct' },
-                                { value: 580, name: 'Email' },
-                                { value: 484, name: 'Union Ads' },
-                                { value: 300, name: 'Video Ads' }
-                            ],
+                            data: [],
                             emphasis: {
                                 itemStyle: {
                                     shadowBlur: 10,
@@ -119,92 +128,126 @@
                         }
                     ]
                 },
-                moneyoption : {
-                    title: {
-                        text: 'Funnel',
-                        left: 'center'
-                    },
-                    tooltip: {
-                        trigger: 'item',
-                        formatter: '{a} <br/>{b} : {c}%'
-                    },
-                    toolbox: {
-                        feature: {
-                            // dataView: { readOnly: false },
-                            // restore: {},
-                            // saveAsImage: {}
-                        }
-                    },
-                    legend: {
-                        data: ['Show', 'Click', 'Visit', 'Inquiry', 'Order'],
-                        show:false,
-                    },
-                    series: [
-                        {
-                            avoidLabelOverlap: true,
-                            name: 'Funnel',
-                            type: 'funnel',
-                            left: '10%',
-                            top: 40,
-                            bottom: 60,
-                            width: '80%',
-                            min: 0,
-                            max: 100,
-                            minSize: '0%',
-                            maxSize: '100%',
-                            sort: 'descending',
-                            gap: 2,
-                            label: {
-                                show: true,
-                                position: 'inside'
-                            },
-                            labelLine: {
-                                length: 10,
-                                lineStyle: {
-                                    width: 1,
-                                    type: 'solid'
-                                }
-                            },
-                            itemStyle: {
-                                borderColor: '#fff',
-                                borderWidth: 1
-                            },
-                            emphasis: {
-                                label: {
-                                    fontSize: 20
-                                }
-                            },
-                            data: [
-                                { value: 60, name: 'Visit' },
-                                { value: 40, name: 'Inquiry' },
-                                { value: 20, name: 'Order' },
-                                { value: 80, name: 'Click' },
-                                { value: 100, name: 'Show' }
-                            ]
-                        }
-                    ]
+				//耗材清单
+                moneyoption :{
+                  backgroundColor: '#ffffff',
+                  title: {
+                    text: '耗材清单',
+                    left: 'center',
+                    top: 0,
+                    textStyle: {
+                      color: '#000'
+                    }
+                  },
+                  tooltip: {
+                    trigger: 'item'
+                  },
+                  visualMap: {
+                    show: false,
+                    min: 0,
+                    max: 200,
+                    inRange: {
+                      colorLightness: [0, 1.5]
+                    }
+                  },
+                  series: [
+                    {
+                      name: '耗材清单',
+                      type: 'pie',
+                      radius: '55%',
+                      center: ['50%', '50%'],
+                      data: [
+                        { value: 335, name: 'Direct' },
+                        { value: 310, name: 'Email' },
+                        { value: 274, name: 'Union Ads' },
+                        { value: 235, name: 'Video Ads' }
+                      ],
+                      roseType: 'radius',
+                      label: {
+                        color: 'rgba(0,0,0,0.5)'
+                      },
+                      labelLine: {
+                        lineStyle: {
+                          color: 'rgba(0,0,0, 0.3)'
+                        },
+                        smooth: 0.2,
+                        length: 10,
+                        length2: 20
+                      },
+                      itemStyle: {
+                        color: '#aaffff',
+                        shadowBlur: 200,
+                        shadowColor: 'rgba(255, 255, 127, 0.5)'
+                      },
+                      animationType: 'scale',
+                      animationEasing: 'elasticOut',
+                      animationDelay: function (idx) {
+                        return Math.random() * 200;
+                      }
+                    }
+                  ]
                 },
-                transporoption :{
-                    title:{
-                        text:"运输利润",
-                        left:"center",
-                        top: 20,
+				//运输利润数据
+                transporoption : {
+					title: {
+					    text: '运输利润',
+					    left: 'center',
+						top:20
+					},
+                  tooltip: {
+                    trigger: 'axis',
+                    axisPointer: {
+                      type: 'line',
+                      lineStyle: {
+                        color: 'rgba(0,0,0,0.2)',
+                        width: 1,
+                        type: 'solid'
+                      }
+                    }
+                  },
+                  legend: {
+						show:false
+                  },
+                  singleAxis: {
+                    top: 50,
+                    bottom: 50,
+                    axisTick: {},
+                    axisLabel: {},
+                    type: 'time',
+                    axisPointer: {
+                      animation: true,
+                      label: {
+                        show: true
+                      }
                     },
-                    xAxis: {
-                        type: 'category',
-                        data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-                    },
-                    yAxis: {
-                        type: 'value'
-                    },
-                    series: [
-                        {
-                            top: 40,
-                            bottom: 60,
-                            data: [120, 200, 150, 80, 70, 110, 130],
-                            type: 'bar'
+                    splitLine: {
+                      show: true,
+                      lineStyle: {
+                        type: 'dashed',
+                        opacity: 0.2
+                      }
+                    }
+                  },
+                  series: [
+                    {
+                      type: 'themeRiver',
+                      emphasis: {
+                        itemStyle: {
+							colorBy: 'data' ,
+                          shadowBlur: 20,
+                          shadowColor: 'rgba(0, 255, 127, 0.8)'
                         }
-                    ]
+                      },
+                      data: [
+                        ['2015/11/08', 10, 'DQ'],
+                        ['2015/11/09', 15, 'DQ'],
+                        ['2015/11/10', 35, 'DQ'],
+                        ['2015/11/11', 38, 'DQ'],
+                        ['2015/11/12', 22, 'DQ'],
+                        ['2015/11/13', 16, 'DQ']
+                      ]
+                    }
+                  ]
                 }
 
 
@@ -214,30 +257,131 @@
         },
         methods: {
             getTyprEcharts(){
+				this.moneyoption.series[0].data=[];
+				this.typeoption.series[0].data=[];
+				this.transporoption.series[0].data=[];
+				//销售额度
+				getmoney().then((res)=>{
+				    if(res != -1){
+				        this.totalMoney = res.datas;
+				    }
+				})
+				//用户总数
                 queryTotal().then((res)=>{
-
                     if(res != -1){
-                        console.log("这是res\n");
-                        console.log(res);
                         this.userCount = res.datas;
-
                     }
                 })
-                //渲染图表
-                let typeEcharts = this.$echarts.init(document.getElementById("typeEcharts"));
-                let moneyEcharts= this.$echarts.init(document.getElementById("moneyEcharts"));
-                let transporEcharts= this.$echarts.init(document.getElementById("transporEcharts"));
-
-                typeEcharts.setOption(this.typeoption);
-                moneyEcharts.setOption(this.moneyoption);
-                transporEcharts.setOption(this.transporoption);
-            }
+				//查询各个类型数量
+				queryByTypeId({"materialtypeId":1}).then((res)=>{
+					// console.log("data66666666666666")
+				 //  console.log(this.moneyoption.series.data)
+				  if(res != -1){
+					  this.moneyoption.series[0].data.push({value: parseInt(res.datas), name: '办公耗材' });
+				  }
+					
+				})
+				queryByTypeId({"materialtypeId":2}).then((res)=>{
+				  // console.log(res)
+				  if(res != -1){
+					  this.moneyoption.series[0].data.push({value: parseInt(res.datas), name: '卫生耗材' });
+				  }
+					
+				})
+				queryByTypeId({"materialtypeId":3}).then((res)=>{
+				  console.log(res)
+				  if(res != -1){
+					  this.moneyoption.series[0].data.push({value: parseInt(res.datas), name: '人员耗材' });
+				  }
+					
+				})
+				queryByTypeId({"materialtypeId":4}).then((res)=>{
+				  console.log(res)
+				  if(res != -1){
+					  this.moneyoption.series[0].data.push({value: parseInt(res.datas), name: '团建耗材' });
+				  }
+					
+				})
+				//运输订单数量
+				queryByCondition1({}).then((res)=>{
+				  console.log(res)
+				  if(res != -1){
+					  this.typeoption.series[0].data.push({ value: parseInt(res.datas.length), name: '运输订单' });
+						this.totalOrder =parseInt(this.totalOrder)+ parseInt(res.datas.length);
+						res.datas.forEach((item, index) => {
+							this.transporoption.series[0].data.push([item.transportationStartTime,parseInt(item.transportationMoney),"利润"])
+							
+							
+						})
+						console.log("************")
+				  }
+					
+				})
+				//货物订单数量
+				queryByCondition({}).then((res)=>{
+				  if(res != -1){
+				    
+				    this.totalOrder =parseInt(this.totalOrder)+ parseInt(res.datas.length);
+				    
+					// console.log("这是data");
+					// console.log(this.typeoption.series[0].data);
+					this.typeoption.series[0].data.push({ value: parseInt(res.datas.length), name: '货物订单' });
+					
+					
+				  }
+				
+				})
+				//物资订单数量
+				let data = {
+				  page: 1,
+				  limit:1000,
+				  materialName:"",
+				  }
+				selectByName(data).then((res)=>{
+					
+					if(res != -1){
+							this.totalOrder =parseInt(this.totalOrder)+ parseInt(res.datas.length);
+							this.typeoption.series[0].data.push({ value: parseInt(res.datas.length), name: '物资订单' });
+						}
+				})
+				//汽车购销数量
+				getByOperation({}).then((res) => {
+					if (res != -1) {
+						this.totalOrder =parseInt(this.totalOrder)+ parseInt(res.datas.length);
+						this.typeoption.series[0].data.push({ value: parseInt(res.datas.length), name: '汽车购销' });
+					}
+				
+				
+				})
+				
+                
+            },
+			drawEcharts(){
+				//饼状图数据
+					let typeEcharts = this.$echarts.init(document.getElementById("typeEcharts"));
+					let moneyEcharts= this.$echarts.init(document.getElementById("moneyEcharts"));
+					let transporEcharts= this.$echarts.init(document.getElementById("transporEcharts"));
+				//渲染图表
+				setTimeout(() =>{
+				 //    console.log("这是option"+this.moneyoption);
+					// console.log(this.moneyoption);
+					this.moneyoption.series[0].data.sort(function (a, b) {
+											return b.value - a.value;
+												})
+				    typeEcharts.setOption(this.typeoption);
+				    moneyEcharts.setOption(this.moneyoption);
+				    transporEcharts.setOption(this.transporoption);
+					console.log("+++++++++++++++++++++++++++++++");
+					this.waitcharts=false
+				},500);
+			}
 
 
 
         },
         mounted() {
             this.getTyprEcharts();
+			this.drawEcharts();
         }
     }
 </script>
