@@ -29,3 +29,18 @@ export function queryByCondition1(data){
         data
     })
 }
+
+export function queryByTypeId(data){
+    return request({
+        url: '/matetialinfo/selectByType',//请求接口
+        method: 'post',//请求方式
+        data
+    })
+}
+export function getmoney(){
+    return request({
+        url: '/user/getSalesValue',//请求接口
+        method: 'get',//请求方式
+        
+    })
+}
