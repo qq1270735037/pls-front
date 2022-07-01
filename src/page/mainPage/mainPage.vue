@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div style="background-color: rgb(255, 255, 255);padding: 10px;height: 500px;">
+        <div style="background-color: rgb(255, 255, 255);padding: 10px;height: 495px;">
 
             <!-- 数量统计 -->
             <div class="main-top-card" >
@@ -37,7 +37,7 @@
             <!-- 数量统计结束 -->
 
             <el-row style="margin-top: 15px;">
-                <el-col :span="7">
+                <el-col :span="11">
                     <div >
                         <el-card class="box-card-echarts" >
                             <div class="text item echarts-render" v-loading="waitcharts" element-loading-text="正在疯狂加载" id="typeEcharts">
@@ -46,7 +46,7 @@
                         </el-card>
                     </div>
                 </el-col>
-                <el-col :span="7" >
+                <el-col :span="11" >
                     <div class="grid-content">
                         <el-card class="box-card-echarts">
                             <div  class="text item echarts-render" v-loading="waitcharts" element-loading-text="正在疯狂加载" id="moneyEcharts">
@@ -55,18 +55,24 @@
                         </el-card>
                     </div>
                 </el-col>
-                <el-col :span="8"><div class="grid-content " >
-                    <div class="grid-content">
+                <el-col :span="10"><div class="grid-content " >
+                    <div class="grid-content" style="margin-top: 30px;">
                         <el-card class="box-card-echarts-last" v-loading="waitcharts" element-loading-text="正在疯狂加载" id="transporEcharts">
                             <div  >
-                                11111
+                            
                             </div>
                         </el-card>
                     </div>
                 </div>
                 </el-col>
             </el-row>
-<!-- 			<div class="box-card-echarts-last1" id="global"></div> -->
+			<!-- <div style="margin-top: 25px;">
+				<el-carousel :interval="4000" type="card" height="400px"  >
+					<el-carousel-item v-for="item in adList" :key="item">
+						<img v-if="item" :src="item" >
+					</el-carousel-item>
+				</el-carousel>
+			</div> -->
         </div>
         
     </div>
@@ -89,7 +95,10 @@
 		
         data() {
             return {
-				
+				//标语列表
+				adList:["http://5b0988e595225.cdn.sohucs.com/images/20180122/6ac4ce92c3414bcc9dcb9811cffd977d.jpeg",
+				"http://pic.baike.soso.com/ugc/baikepic2/18371/20180116183604-135628557_jpg_1024_697_59019.jpg/0",
+				"https://file03.sg560.com/upimg01/2016/08/918087/Content/1827352901932343918087.jpg"],
 				//遮罩
 				waitcharts:true,
 				//订单总数
@@ -371,7 +380,7 @@
 				    typeEcharts.setOption(this.typeoption);
 				    moneyEcharts.setOption(this.moneyoption);
 				    transporEcharts.setOption(this.transporoption);
-					console.log("+++++++++++++++++++++++++++++++");
+					// console.log("+++++++++++++++++++++++++++++++");
 					this.waitcharts=false
 				},500);
 			}
@@ -437,13 +446,13 @@
 
     .box-card-echarts{
 
-        width: 350px;
+        width: 550px;
         margin-right: 0px;
-        height: 250px;
+        height: 450px;
     }
     .box-card-echarts-last{
-        width: 540px;
-        height: 250px;
+        width: 1150px;
+        height: 450px;
         background-color: rgb(255, 255, 255) !important;
     }
 	.box-card-echarts-last1{
@@ -453,8 +462,8 @@
 	}
     .echarts-render{
         background-color: rgb(255, 255, 255);
-        width: 300px;
-        height: 250px;
+        width: 550px;
+        height: 450px;
     }
     .grid-content {
         border-radius: 20px;
