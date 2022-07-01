@@ -164,13 +164,29 @@
           label-position="right"
       >
         <el-form-item label="公司编号">
-          <el-input v-model="temp.companyId" placeholder="请输入公司编号" />
+<!--          <el-input v-model="temp.companyId" placeholder="请输入公司编号" />-->
+          <el-select v-model="temp.companyId" placeholder="请选择" size="small">
+            <el-option
+                v-for="item in companyList"
+                :key="item.value"
+                :label="item.companyId"
+                :value="item.companyId">
+            </el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="姓名">
           <el-input v-model="temp.employeeName" placeholder="请输入姓名" />
         </el-form-item>
         <el-form-item label="性别">
-          <el-input v-model="temp.employeeGender" placeholder="请输入性别" />
+<!--          <el-input v-model="temp.employeeGender" placeholder="请输入性别" />-->
+          <el-select v-model="temp.employeeGender" placeholder="请选择" size="small">
+            <el-option
+                v-for="item in gender"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+            </el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="地址">
           <el-input v-model="temp.employeeAddress" placeholder="请输入地址" />
@@ -179,7 +195,11 @@
           <el-input v-model="temp.employeeMobile" placeholder="请输入手机号" />
         </el-form-item>
         <el-form-item label="是否在职">
-          <el-input v-model="temp.employeeStatus" placeholder="请输入职务状态" />
+<!--          <el-input v-model="temp.employeeStatus" placeholder="请输入职务状态" />-->
+          <el-radio-group v-model="temp.employeeStatus">
+            <el-radio label="在职" value="在职"></el-radio>
+            <el-radio label="离职" value ="离职"></el-radio>
+          </el-radio-group>
         </el-form-item>
         <el-form-item label="身份证">
           <el-input v-model="temp.employeeNumber" placeholder="请输入身份证号" />
@@ -201,6 +221,7 @@ import { deepClone } from '@/utils/index.js';
 import Pagination from '@/components/Pagination'
 import { setStorage, getStorage} from "@/utils/localStorage.js";
 import {Message} from "element-ui";
+import {queryByName} from "@/api/getCompanyinfo";
 const _temp = {
   companyId: "",
   employeeAddress: "",
@@ -219,9 +240,17 @@ export default {
   },
   data() {
     return {
+      gender:[{
+        value: '男',
+        label: '男'
+      }, {
+        value: '女',
+        label: '女'
+      }],
       searchloading:false, //搜索按钮显示加载
       listLoading:true,//查询时加载遮罩
       employeeList:[],       //存储表单内容
+      companyList:[],
       listQuery:{       // 查询的数据
         limit: 10,//每页条数
         page: 1,//当前页码
@@ -235,6 +264,20 @@ export default {
   },
 
   methods: {
+    getCompanyId() {
+      queryByName({}).then((res) => {
+        if (res != -1) {
+          // console.log("这是res\n");
+          // console.log(res);
+          res.datas.forEach((item, index) => {
+            item.index = index + 1;
+            //console.log(item)
+          })
+          this.companyList = res.datas;
+        }
+
+      })
+    },
     //初始化表格
     initEmployeeList(){
       this.listLoading = true;
@@ -290,6 +333,7 @@ export default {
       this.temp = Object.assign({}, _temp)
     },
     insert() {
+      this.getCompanyId();
       this.resetTemp()
       this.dialogVisible = true
       this.dialogType = 'create'
@@ -298,6 +342,7 @@ export default {
       })
     },
     edit(scope) {
+      this.getCompanyId();
       this.resetTemp()
       this.dialogVisible = true
       this.dialogType = 'modify'

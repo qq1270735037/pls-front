@@ -155,11 +155,13 @@
 			<el-form-item label="车型">
 			  <el-input v-model="temp.carStyle" placeholder="请输入车型" />
 			</el-form-item>
-			<el-form-item label="车辆载重(单位:吨)">
-			  <el-input v-model="temp.carLoad" placeholder="请输入车辆载重(单位:吨)" />
+			<el-form-item label="车辆载重(单位:t)">
+<!--			  <el-input v-model="temp.carLoad" placeholder="请输入车辆载重(单位:吨)" />-->
+        <el-input-number v-model="temp.carLoad" @change="handleChange" :min="0"  label="车辆载重(单位:吨)"></el-input-number>
 			</el-form-item>
-			<el-form-item label="车辆里程数(单位:千米)">
-			  <el-input v-model="temp.carMileage" placeholder="请输入车辆里程数(单位:千米)" />
+			<el-form-item label="车辆里程数(单位:km)">
+<!--			  <el-input v-model="temp.carMileage" placeholder="请输入车辆里程数(单位:千米)" />-->
+        <el-input-number v-model="temp.carMileage" @change="handleChange" :min="0"  label="车辆载重(单位:吨)"></el-input-number>
 			</el-form-item>
 			<el-form-item label="车辆品牌">
 			  <el-input v-model="temp.carBrand" placeholder="请输入车辆品牌" />
