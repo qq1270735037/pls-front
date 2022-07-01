@@ -5,7 +5,7 @@
 		  style="width: 190px;margin-right: 40px;margin-top: 20px;margin-bottom: 20px;"
 	        v-model="searchName"
 	        size="small"
-	        placeholder="请输入货物类型名称"
+	        placeholder="请输入货物名称"
 	        clearable
 	        class="filter-item"
 	      />
@@ -267,6 +267,7 @@
 			handleCurrentChange(val) {
 				//console.log(val);
 				this.cur_page = val;
+				
 				//console.log(this.cur_page);
 				//console.log(this.companyList.slice((this.cur_page - 1) * this.pageSize, this.cur_page * this.pageSize));
 			},
@@ -274,6 +275,7 @@
 			handleSizeChange(val) {
 				this.pageSize = val;
 				this.cur_page = 1;
+			
 				//console.log(this.companyList.slice((this.cur_page - 1) * this.pageSize, this.cur_page * this.pageSize));
 			},
 			initMateriallist(){
@@ -302,6 +304,7 @@
 				}
 				selectByName(data).then((res)=>{
 					this.materiallist = res.datas;
+					this.total=res.datas.length;
 					this.listLoading = false;
 					res.datas.forEach((item, index) => {
 						item.index = index+1;

@@ -326,6 +326,7 @@
 				}
 				selectByName(data).then((res)=>{
 					this.materiallist = res.datas;
+					this.total=res.datas.length;
 					this.listLoading = false;
 					res.datas.forEach((item, index) => {
 						item.index = index+1;
