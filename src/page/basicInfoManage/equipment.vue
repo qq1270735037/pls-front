@@ -238,7 +238,7 @@ export default {
             //console.log(res.total);
 
             this.machineList = res.datas;
-            this.listQuery.total = res.datas.length;
+            this.listQuery.total = res.total;
             setTimeout(() => {
               this.listLoading = false;
             }, 200)
