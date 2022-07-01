@@ -226,6 +226,7 @@ export default {
             item.index = index+1;
           })
           this.carList = res.datas;
+          this.inputData = "";
           this.total = this.carList.length;
           this.listLoading = false;
         }
@@ -244,6 +245,7 @@ export default {
             item.index = index + 1;
           })
 		  this.total=res.datas.length;
+          this.cur_page = 1;
           this.carList = res.datas;
           this.listLoading = false;
         }
