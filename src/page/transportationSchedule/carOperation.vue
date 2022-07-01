@@ -262,6 +262,8 @@ import {Message} from "element-ui";
             item.index = index + 1;
           })
           this.transportationList = res.datas;
+          this.total=this.transportationList.length;
+          this.cur_page=1;
           this.listLoading = false;
         }
       })
