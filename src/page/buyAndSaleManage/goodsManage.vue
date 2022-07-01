@@ -146,6 +146,12 @@
 			class="demo-ruleForm"
 		  >
 			<!-- 需更改 -->
+			<el-form-item label="购销货物" v-show="dialogType=='modify'" >
+			  <div>{{temp.merchandiseName}}</div>
+			</el-form-item>
+			<el-form-item v-show="dialogType=='modify'"  label="货物编号" >
+			  <div>{{temp.merchandiseId}}</div>
+			</el-form-item>
 			<el-form-item label="购销类型" prop="purchasesaleType">
 				<template>
 				  <el-radio v-model="temp.purchasesaleType" label="购入">购入</el-radio>
@@ -154,12 +160,17 @@
 			</el-form-item>
 			
 			
-			<el-form-item label="购销货物" prop="merchandiseName">
+			<el-form-item label="购销货物" v-show="dialogType=='create'" prop="merchandiseName">
 			  <el-input v-model="temp.merchandiseName" placeholder="请输入货物名称" />
 			</el-form-item>
-			<el-form-item label="货物编号" prop="merchandiseId">
+			
+			
+			
+			
+			<el-form-item v-show="dialogType=='create'"  label="货物编号" prop="merchandiseId">
 			  <el-input v-model="temp.merchandiseId" placeholder="请输入货物编号" />
 			</el-form-item>
+			
 			<el-form-item label="购销价格(单位:元)" prop="purchasesalePrice" >
 			  <el-input v-model="temp.purchasesalePrice"  placeholder="请输入购销价格" />
 			</el-form-item>
