@@ -228,7 +228,7 @@
 									],
 						merchandiseName: [
 						{ required: true, message: '请输入货物名称', trigger: 'blur' },
-						{ min: 3, max: 10,message: '长度在 3 到 10 个字符', trigger: 'blur' }
+						{ min: 1, max: 10,message: '长度在 1 到 10 个字符', trigger: 'blur' }
 										],
 						merchandiseId: [
 						{ required: true,  message: '请输入货物编号(仅数字)', trigger: 'blur' },
