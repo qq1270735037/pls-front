@@ -163,12 +163,24 @@
 			class="demo-ruleForm"
 		  >
 			
+			
+			
+			<el-form-item label="人员编号" v-show="dialogType=='create'" prop="employeeId">
+			  <el-input v-model="temp.employeeId" placeholder="请输入人员编号" />
+			</el-form-item>
+			<el-form-item label="人员编号" v-show="dialogType=='modify'" >
+			  <div> {{temp.employeeId}}</div>
+			</el-form-item>
+			
+			<el-form-item label="人员姓名" v-show="dialogType=='modify'" >
+			  <div> {{temp.employeeName}}</div>
+			</el-form-item>
 			<el-form-item label="证件编号" prop ="certificateCode" >
 			  <el-input v-model="temp.certificateCode" placeholder="请输入证件编号" />
 			</el-form-item>
-			<el-form-item label="人员编号" prop="employeeId">
-			  <el-input v-model="temp.employeeId" placeholder="请输入人员编号" />
-			</el-form-item>
+			
+			
+			
 			<el-form-item label="证件名" prop = "certificateName">
 			  <el-input v-model="temp.certificateName" placeholder="请输入证件名" />
 			</el-form-item>
@@ -239,6 +251,7 @@
 	  certificateName: '',
 	  certificateCode: '',
 	  employeeId: '',
+	  employeeName:''
 	  
 	  
 	}
@@ -376,7 +389,7 @@
 			  this.resetTemp()
 			  this.dialogVisible = true
 			  this.dialogType = 'modify'
-			  this.temp = deepClone(scope.row)
+			  this.temp = deepClone(scope.row) //这里将scope的row复制到temp中是有选择的复制, 如果temp中属性少也没事
 			  this.$nextTick(() => {
 				this.$refs['dataForm'].clearValidate()
 			  })
