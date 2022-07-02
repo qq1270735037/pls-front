@@ -49,7 +49,7 @@
         style="width: 100%;"
     >
       <el-table-column
-          fixed
+          
           label="序号"
           width="200"
           align="center"
@@ -59,7 +59,7 @@
         </template>
       </el-table-column>
       <el-table-column
-          fixed
+          
           label="车牌号"
           width="200"
           align="center"
