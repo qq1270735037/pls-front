@@ -17,7 +17,7 @@
 		</el-header>
 
 		<el-container style="height: 100%	; border: 1px solid #eee">
-			<el-aside width="200px" style="background-color: rgb(237, 236, 246) ">
+			<el-aside width="250px" style="background-color: rgb(237, 236, 246) ">
 				<el-menu router :default-active="this.$router.path" style="height:500px">
 					<el-menu-item index="mainPage"><i class="el-icon-message"></i>首页</el-menu-item>
 					<el-submenu index="1">
