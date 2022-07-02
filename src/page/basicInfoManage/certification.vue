@@ -49,7 +49,6 @@
 		  highlight-current-row
 		>
 		<el-table-column
-			fixed
 			label="序号"
 			width="120"
 			align="center"
@@ -59,7 +58,6 @@
 			</template>
 		</el-table-column>
 		  <el-table-column
-			fixed
 			label="证件编号"
 			width="120"
 			align="center"
